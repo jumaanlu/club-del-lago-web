@@ -1,0 +1,22 @@
+{
+  "entities": {
+    "contacts": {
+      "title": "Contact",
+      "description": "User contact inquiries",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the person" },
+        "email": { "type": "string", "format": "email", "description": "Email address" },
+        "message": { "type": "string", "description": "Message or inquiry" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the inquiry was created" }
+      },
+      "required": ["name", "email", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/contacts/{contactId}": {
+      "schema": "contacts",
+      "description": "Collection for contact form submissions"
+    }
+  }
+}

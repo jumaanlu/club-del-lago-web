@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // Contact form submissions
+    match /contacts/{contactId} {
+      allow create: if isValidId(contactId)
+        && incoming().name is string && incoming().name.size() > 0 && incoming().name.size() <= 200
+        && incoming().email is string && incoming().email.matches('^.+@.+\\..+$') && incoming().email.size() <= 200
+        && incoming().message is string && incoming().message.size() > 0 && incoming().message.size() <= 2000
+        && incoming().createdAt == request.time;
+      
+      // Only admins or special accounts would read this in a real app, 
+      // but for this demo/setup we'll keep it simple or restricted.
+      allow read: if false; 
+    }
+  }
+}
