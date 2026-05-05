@@ -21,7 +21,7 @@ const Navbar = () => {
     { name: 'El Club', href: pathname === '/' ? '#club' : '/#club' },
     { name: 'Deportes', href: '/deportes', isPage: true },
     { name: 'Directorio', href: '/directorio', isPage: true },
-    { name: 'Restaurante', href: pathname === '/' ? '#restaurante' : '/#restaurante' },
+    { name: 'Restaurante', href: '/restaurante', isPage: true },
     { name: 'Contacto', href: pathname === '/' ? '#contacto' : '/#contacto' },
   ];
 
@@ -309,20 +309,27 @@ const Restaurant = () => {
             <div className="flex items-start gap-4">
               <div className="w-1 bg-gold h-full self-stretch"></div>
               <div>
-                <p className="text-sm font-semibold uppercase tracking-wide text-navy">Restaurante La Terraza</p>
-                <p className="text-xs text-slate-500 italic">Desayunos y comidas con vista privilegiada a nuestras áreas verdes.</p>
+                <p className="text-sm font-semibold uppercase tracking-wide text-navy">Restaurante Las Palmas</p>
+                <p className="text-xs text-slate-500 italic">Elegancia y tradición en cada platillo. Ideal para desayunos y comidas familiares.</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
               <div className="w-1 bg-gold h-full self-stretch"></div>
               <div>
-                <p className="text-sm font-semibold uppercase tracking-wide text-navy">Snack & Pool Bar</p>
-                <p className="text-xs text-slate-500 italic">Opciones ligeras y refrescantes para disfrutar en familia junto a la alberca.</p>
+                <p className="text-sm font-semibold uppercase tracking-wide text-navy">Snack Brasas</p>
+                <p className="text-xs text-slate-500 italic">Deliciosos cortes y snacks en un ambiente relajado junto a las brasas.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-1 bg-gold h-full self-stretch"></div>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-navy">Bar Terraza</p>
+                <p className="text-xs text-slate-500 italic">Coctelería premium y botanas con la mejor vista panorámica del club.</p>
               </div>
             </div>
           </div>
 
-          <button className="btn-primary">Reservar Mesa</button>
+          <Link to="/restaurante" className="btn-primary inline-block">Ver Áreas y Menús</Link>
         </motion.div>
 
         <motion.div 
@@ -708,6 +715,127 @@ const SportsPage = () => {
 
 // --- Pages ---
 
+const RestaurantPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const areas = [
+    {
+      id: 'las-palmas',
+      title: 'Restaurante Las Palmas',
+      description: 'Nuestra área insignia donde la elegancia y la tradición se encuentran. Ofrecemos una experiencia gastronómica completa en un ambiente refinado y acogedor.',
+      image: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=2670&auto=format&fit=crop',
+      menus: [
+        { label: 'Menú de Desayunos', file: '/menus/desayunos-las-palmas.pdf' },
+        { label: 'Menú de Comidas', file: '/menus/comidas-las-palmas.pdf' }
+      ]
+    },
+    {
+      id: 'snack-brasas',
+      title: 'Snack Brasas',
+      description: 'El lugar ideal para una comida informal y deliciosa. Especialidad en cortes y opciones rápidas para disfrutar en un ambiente relajado.',
+      image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=2670&auto=format&fit=crop',
+      menus: [
+        { label: 'Menú Snack Brasas', file: '/menus/menu-snack-brasas.pdf' }
+      ]
+    },
+    {
+      id: 'bar-terraza',
+      title: 'Bar Terraza',
+      description: 'Relájese con la mejor vista del club. Disfrute de nuestra coctelería premium y botanas artesanales mientras contempla el atardecer.',
+      image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=2622&auto=format&fit=crop',
+      menus: [
+        { label: 'Menú de Bebidas y Botanas', file: '/menus/menu-bar-terraza.pdf' }
+      ]
+    }
+  ];
+
+  return (
+    <div className="pt-20 bg-white">
+      {/* Restaurant Hero */}
+      <section className="py-24 bg-navy text-white relative overflow-hidden border-b-4 border-gold">
+        <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1550966842-282412830225?q=80&w=2671&auto=format&fit=crop')] bg-cover bg-center" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="max-w-3xl">
+            <span className="text-gold font-bold tracking-[0.3em] uppercase text-xs mb-4 block italic">Experiencia Gastronómica</span>
+            <h1 className="text-4xl md:text-6xl font-serif italic lowercase first-letter:uppercase mb-6">Sabores que definen nuestra tradición</h1>
+            <p className="text-slate-300 italic text-lg leading-relaxed">
+              Descubra la excelencia culinaria en nuestras tres áreas diseñadas para cada momento del día. Desde desayunos familiares hasta cenas elegantes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Restaurant Areas */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="space-y-32">
+            {areas.map((area, idx) => (
+              <motion.div 
+                key={area.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className={`flex flex-col ${idx % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-20 items-center`}
+              >
+                <div className="lg:w-1/2 w-full">
+                  <div className="aspect-[16/10] overflow-hidden border border-slate-100 p-2 bg-white shadow-sm relative group">
+                    <img src={area.image} alt={area.title} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" />
+                    <div className="absolute -bottom-4 -right-4 w-32 h-32 border-4 border-gold/20 -z-10 group-hover:border-gold/40 transition-colors" />
+                  </div>
+                </div>
+
+                <div className="lg:w-1/2 w-full space-y-8">
+                  <div>
+                    <span className="text-gold font-bold uppercase text-[10px] tracking-[0.2em] mb-4 block italic">Área {idx + 1}</span>
+                    <h2 className="text-3xl md:text-5xl text-navy font-serif italic mb-6 leading-tight">{area.title}</h2>
+                    <p className="text-slate-600 italic leading-relaxed text-lg">{area.description}</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    {area.menus.map((menu, mIdx) => (
+                      <a 
+                        key={mIdx}
+                        href={menu.file} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 bg-navy text-white px-6 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-gold transition-colors border-l-4 border-gold shadow-sm"
+                      >
+                        <Utensils size={14} className="text-gold" />
+                        {menu.label}
+                      </a>
+                    ))}
+                  </div>
+                  
+                  <div className="flex items-center gap-4 text-slate-400">
+                    <Clock size={16} />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Consulte horarios de servicio en recepción</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Reservations CTA */}
+      <section className="py-24 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h3 className="text-3xl font-serif italic text-navy mb-6">¿Desea reservar una mesa?</h3>
+          <p className="text-slate-600 italic mb-10">Nuestro equipo está listo para brindarle la mejor experiencia. Para reservaciones en Restaurante Las Palmas o eventos especiales, contáctenos.</p>
+          <div className="flex flex-wrap justify-center gap-6">
+            <a href="tel:8196895727" className="flex items-center gap-3 text-navy font-bold uppercase text-xs tracking-widest border-b border-gold pb-1">
+              <Phone size={14} /> 81 9689 5727
+            </a>
+            <Link to="/#contacto" className="btn-primary">Enviar Mensaje</Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
 const HomePage = () => {
   return (
     <>
@@ -729,9 +857,70 @@ const DirectoryPage = () => {
   return <Directory />;
 };
 
+// --- Maintenance ---
+
+const MaintenanceMode = () => {
+  return (
+    <div className="min-h-screen bg-navy flex items-center justify-center p-8 text-center relative overflow-hidden">
+      <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1540324155974-7523202daa3f?q=80&w=2515&auto=format&fit=crop')] bg-cover bg-center" />
+      <div className="absolute inset-0 bg-navy/80" />
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-2xl relative z-10"
+      >
+        <div className="mb-12">
+          <h2 className="text-gold text-5xl md:text-6xl font-serif italic mb-2">Club del Lago</h2>
+          <div className="h-px w-24 bg-gold/50 mx-auto" />
+        </div>
+        
+        <span className="text-gold font-bold tracking-[0.4em] uppercase text-[10px] mb-8 block italic">Experiencia Digital en Renovación</span>
+        
+        <h1 className="text-4xl md:text-5xl font-serif italic text-white mb-8 leading-tight lowercase first-letter:uppercase">
+          Estamos preparando algo especial para usted
+        </h1>
+        
+        <p className="text-slate-400 italic text-lg leading-relaxed mb-16 px-4">
+          Nuestro sitio web está en proceso de actualización para brindarle una mejor experiencia y acceso a todos nuestros servicios, menús y novedades.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-white/70 border-t border-white/10 pt-12">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-2">
+              <Phone size={18} className="text-gold" />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Contacto Directo</span>
+            <span className="text-sm tracking-widest font-medium text-white">81 9689 5727</span>
+          </div>
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-2">
+              <Mail size={18} className="text-gold" />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Atención a Socios</span>
+            <span className="text-sm tracking-widest font-medium text-white lowercase">info@clubdelago.com.mx</span>
+          </div>
+        </div>
+        
+        <div className="mt-20">
+           <span className="text-slate-600 text-[10px] font-bold uppercase tracking-widest italic">Nos vemos pronto</span>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 // --- Main App ---
 
+const IS_MAINTENANCE = true;
+
 export default function App() {
+  if (IS_MAINTENANCE) {
+    return (
+      <MaintenanceMode />
+    );
+  }
+
   return (
     <BrowserRouter>
       <div className="bg-white selection:bg-gold/30 selection:text-navy italic min-h-screen flex flex-col">
@@ -741,6 +930,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/deportes" element={<SportsPage />} />
             <Route path="/directorio" element={<DirectoryPage />} />
+            <Route path="/restaurante" element={<RestaurantPage />} />
           </Routes>
         </main>
         <Footer />
