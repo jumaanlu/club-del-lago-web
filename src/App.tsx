@@ -912,7 +912,7 @@ const MaintenanceMode = () => {
 
 // --- Main App ---
 
-const IS_MAINTENANCE = true;
+const IS_MAINTENANCE = false;
 
 export default function App() {
   if (IS_MAINTENANCE) {
