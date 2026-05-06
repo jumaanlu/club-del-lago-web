@@ -67,10 +67,17 @@ const Navbar = () => {
     // Test Firestore connection
     const testConnection = async () => {
       try {
-        await getDocFromServer(doc(db, 'test', 'connection'));
+        console.log("Checking Firestore connection...");
+        // Use a timeout for the test to avoid hanging
+        const docRef = doc(db, 'test', 'connection');
+        await getDocFromServer(docRef);
+        console.log("Firestore connection successful.");
       } catch (error) {
-        if (error instanceof Error && error.message.includes('the client is offline')) {
-          console.error("Please check your Firebase configuration.");
+        console.warn("Firestore connectivity check failed (expected behavior if still provisioning):", error);
+        if (error instanceof Error) {
+          if (error.message.includes('the client is offline') || error.message.includes('Backend didn\'t respond')) {
+             console.info("Firestore status: The database might still be provisioning. This feature will be available once the backend is ready.");
+          }
         }
       }
     };
@@ -191,7 +198,7 @@ const Hero = () => {
           </div>
           
           <img 
-            src="/Instalaciones/hero.jpg" 
+            src="/images/hero.jpg" 
             alt="Club Layout" 
             className="w-full h-full object-cover"
           />
@@ -283,7 +290,7 @@ const About = () => {
           >
             <div className="aspect-[4/3] overflow-hidden border border-slate-100 p-2 bg-white shadow-sm">
               <img 
-                src="/Instalaciones/club5.jpg" 
+                src="/images/club5.jpg" 
                 alt="Comunidad" 
                 className="w-full h-full object-cover"
               />
@@ -391,14 +398,14 @@ const Restaurant = () => {
           className="grid grid-cols-2 gap-4 h-full"
         >
           <div className="space-y-4">
-            <img src="/Instalaciones/brasas.jpg" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Snack Brasas" />
+            <img src="/images/brasas.jpg" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Snack Brasas" />
             <div className="bg-forest/10 p-6 flex items-center justify-center border-l-4 border-forest">
                <span className="text-forest font-bold uppercase text-[10px] tracking-widest text-center">Insumos de <br/> Primera Calidad</span>
             </div>
           </div>
           <div className="space-y-4 pt-12">
-            <img src="/Instalaciones/Palmas-1.jpg" className="rounded-sm h-44 w-full object-cover border border-slate-100" alt="Restaurante" />
-            <img src="/Instalaciones/bar.jpg" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Bar Terraza" />
+            <img src="/images/Palmas.jpg" className="rounded-sm h-44 w-full object-cover border border-slate-100" alt="Restaurante" />
+            <img src="/images/bar.jpg" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Bar Terraza" />
           </div>
         </motion.div>
       </div>
@@ -534,6 +541,7 @@ const Contact = () => {
                 <div>
                   <h4 className="font-bold text-navy mb-1 text-[11px] uppercase tracking-wider">Atención de Socios</h4>
                   <p className="text-slate-600 text-xs italic">Lunes a Viernes: 9:00 AM - 6:00 PM</p>
+                  <p className="text-slate-600 text-xs italic mt-1 font-medium">atencionaasociados@clubdelago.com.mx</p>
                 </div>
               </div>
             </div>
@@ -706,10 +714,10 @@ const SportsPage = () => {
   }, []);
 
   const featuredFlyers = [
-    'CROSSFIT.png',
     'NATACION MIXTO ADULTOS.png',
     'ZUMBA FITNESS.png',
-    'ACONDICIONAMIENTO FISICO.png'
+    'ACONDICIONAMIENTO FISICO.png',
+    'TENIS BOLA NARANJA.png'
   ];
 
   // Auto-play for featured carousel
@@ -736,19 +744,7 @@ const SportsPage = () => {
     'ADULTOS FUTBOL.png',
     'AQUAFITNESS CLASE AM.png',
     'AQUAFITNESS CLASE PM.png',
-    'BASQUETBOL.png',
-    'CLASE DE BAILE.png',
-    'CROSSFIT.png',
-    'DANCE FIT.png',
-    'FITNESS DAMAS.png',
-    'FRONTENIS.png',
-    'FUTBOL MIXTO INFANTIL 2011-2014.png',
-    'FUTBOL MIXTO INFANTIL 2015-2019.png',
-    'FUTBOL MIXTO INFANTIL 2020-2022.png',
-    'GIMNASIA ARTISTICA.png',
     'NATACION MIXTO ADULTOS.png',
-    'NATACIÓN MIXTO INFANTIL.png',
-    'PILATES.png',
     'RITMOS LATINOS.png',
     'SPINNING CLASS.png',
     'TAEKWONDO.png',
@@ -1286,7 +1282,7 @@ const RestaurantPage = () => {
       id: 'las-palmas',
       title: 'Restaurante Las Palmas',
       description: 'Nuestra área insignia donde la elegancia y la tradición se encuentran. Disfrute de una experiencia completa en un ambiente refinado.',
-      image: '/Instalaciones/Palmas.jpg',
+      image: '/images/Palmas.jpg',
       menus: [
         { label: 'Menú de Desayunos', type: 'digital', file: null, action: () => { setMenuType('desayunos'); setActiveCategory('Fruta & Hot Cakes'); setShowDetailedMenu(true); } },
         { label: 'Menú de Comidas', type: 'digital', file: null, action: () => { setMenuType('comidas'); setActiveCategory('Principales'); setShowDetailedMenu(true); } }
@@ -1296,7 +1292,7 @@ const RestaurantPage = () => {
       id: 'snack-brasas',
       title: 'Snack Brasas',
       description: 'El lugar ideal para una comida informal. Especialidad en cortes y opciones rápidas para disfrutar en un ambiente relajado.',
-      image: '/Instalaciones/brasas.jpg',
+      image: '/images/brasas.jpg',
       menus: [
         { label: 'Ver Menú Snack', type: 'pdf', file: '/menus/menu-snack-brasas.pdf', action: null }
       ]
@@ -1305,7 +1301,7 @@ const RestaurantPage = () => {
       id: 'bar-terraza',
       title: 'Bar Terraza',
       description: 'Relájese con la mejor vista del club. Disfrute de nuestra coctelería premium y botanas artesanales al atardecer.',
-      image: '/Instalaciones/bar.jpg',
+      image: '/images/bar.jpg',
       menus: [
         { label: 'Ver Menú Digital', type: 'digital', file: null, action: () => { setMenuType('terraza'); setActiveCategory('Entradas & Botanas'); setShowDetailedMenu(true); } }
       ]

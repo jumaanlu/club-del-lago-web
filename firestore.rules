@@ -27,9 +27,12 @@ service cloud.firestore {
         && incoming().message is string && incoming().message.size() > 0 && incoming().message.size() <= 2000
         && incoming().createdAt == request.time;
       
-      // Only admins or special accounts would read this in a real app, 
-      // but for this demo/setup we'll keep it simple or restricted.
       allow read: if false; 
+    }
+
+    // Connection test document
+    match /test/connection {
+      allow read: if true;
     }
   }
 }

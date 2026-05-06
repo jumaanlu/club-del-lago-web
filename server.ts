@@ -16,8 +16,10 @@ app.post("/api/send-email", async (req, res) => {
   const resendApiKey = process.env.RESEND_API_KEY;
   const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL || "atencionaasociados@clubdelago.com.mx";
 
+  console.log(`[Email] Intento de envío a: ${receiverEmail}`);
+
   if (!resendApiKey) {
-    console.error("RESEND_API_KEY is missing");
+    console.error("[Email] ERROR: RESEND_API_KEY no configurado.");
     return res.status(500).json({ error: "Configuración de correo incompleta" });
   }
 
