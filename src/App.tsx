@@ -3,7 +3,8 @@ import {
   Menu, X, ChevronRight, ChevronLeft, Phone, Mail, MapPin, 
   Instagram, Facebook, Clock, Trophy, Users, 
   Dumbbell, Utensils, Calendar, Smartphone,
-  ExternalLink, ArrowRight, Loader2, CheckCircle2, Plus
+  ExternalLink, ArrowRight, Loader2, CheckCircle2, Plus,
+  Camera, Maximize2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
@@ -87,6 +88,7 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Inicio', href: pathname === '/' ? '#inicio' : '/' },
     { name: 'El Club', href: pathname === '/' ? '#club' : '/#club' },
+    { name: 'Instalaciones', href: '/instalaciones', isPage: true },
     { name: 'Deportes', href: '/deportes', isPage: true },
     { name: 'Directorio', href: '/directorio', isPage: true },
     { name: 'Restaurante', href: '/restaurante', isPage: true },
@@ -1494,6 +1496,195 @@ const DirectoryPage = () => {
   return <Directory />;
 };
 
+const InstallationsPage = () => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentPool, setCurrentPool] = useState(0);
+
+  const poolPhotos = [
+    { id: 1, title: 'Alberca Olímpica Lagartos', image: '/images/gallery/ALBERCA INTERIROR.png', desc: 'Nuestra icónica alberca techada, el alma deportiva del club.' },
+    { id: 2, title: 'Entrenamiento de Alto Nivel', image: '/images/gallery/ALBERCA INTERIOR 2.png', desc: 'Carriles diseñados para la competencia y el perfeccionamiento.' },
+    { id: 3, title: 'Mañanas de Distinción', image: '/images/gallery/alberca 1.png', desc: 'Vistas inigualables mientras disfrutas de un nado revitalizante.' },
+    { id: 4, title: 'Reflejos del Club', image: '/images/gallery/ALBERCA INTERIOR 3.png', desc: 'Arquitectura y deporte en perfecta armonía.' },
+    { id: 5, title: 'Atardeceres en el Agua', image: '/images/gallery/alberca 2.png', desc: 'El lugar preferido para el descanso y la convivencia familiar.' },
+    { id: 6, title: 'Tradición y Deporte', image: '/images/gallery/alberca 3.png', desc: 'Más de 40 años forjando nadadores de excelencia.' },
+    { id: 7, title: 'Espacios que Inspiran', image: '/images/gallery/alberca 4.png', desc: 'Rodeados de la belleza natural de Monterrey.' },
+    { id: 8, title: 'Vivir el Club', image: '/images/gallery/ALBERCA 5.png', desc: 'Cada rincón pensado para tu bienestar.' },
+    { id: 9, title: 'Momentos de Sol', image: '/images/gallery/ALBERCA INTERIROR 2.png', desc: 'El corazón del verano en Club del Lago.' },
+  ];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const timer = setInterval(() => {
+      setCurrentPool((prev) => (prev + 1) % poolPhotos.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [poolPhotos.length]);
+
+  return (
+    <div className="pt-20 bg-[#fdfdfd] min-h-screen pb-32">
+      {/* Editorial Header */}
+      <section className="max-w-7xl mx-auto px-6 pt-24 pb-12 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <span className="text-gold font-bold text-[9px] uppercase tracking-[0.5em] mb-6 block">Estilo de Vida • Club del Lago</span>
+          <h1 className="text-5xl md:text-7xl font-serif italic text-navy mb-8 leading-tight">
+            Nuestras Albercas
+          </h1>
+          <div className="w-16 h-px bg-gold/40 mx-auto mb-8" />
+          <p className="text-slate-500 italic text-xl max-w-2xl mx-auto leading-relaxed px-8">
+            Espacios diseñados para la excelencia deportiva y el descanso familiar incomparable.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Automatic Aesthetic Carousel */}
+      <section className="max-w-7xl mx-auto px-6 mb-32">
+        <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-sm bg-slate-100 shadow-2xl group">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentPool}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 1.2, ease: "easeInOut" }}
+              className="absolute inset-0 cursor-pointer"
+              onClick={() => setSelectedImage(poolPhotos[currentPool].image)}
+            >
+              <img 
+                src={poolPhotos[currentPool].image} 
+                alt={poolPhotos[currentPool].title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent" />
+              
+              <div className="absolute bottom-12 left-12 right-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="max-w-xl">
+                  <motion.h2 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-white font-serif italic text-3xl md:text-5xl mb-2"
+                  >
+                    {poolPhotos[currentPool].title}
+                  </motion.h2>
+                  <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                    className="text-white/70 italic text-sm md:text-lg font-light"
+                  >
+                    {poolPhotos[currentPool].desc}
+                  </motion.p>
+                </div>
+                <div className="flex gap-2">
+                  {poolPhotos.map((_, idx) => (
+                    <button 
+                      key={idx}
+                      onClick={(e) => { e.stopPropagation(); setCurrentPool(idx); }}
+                      className={`h-1 transition-all duration-500 rounded-full ${idx === currentPool ? 'w-12 bg-gold' : 'w-4 bg-white/30'}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </section>
+
+      {/* Organic Gallery - More Collections */}
+      <section className="max-w-7xl mx-auto px-6">
+        <div className="mb-16 flex items-center gap-4">
+          <div className="h-px bg-slate-200 grow" />
+          <h2 className="text-navy/40 font-serif italic text-2xl px-4">Galería de Momentos</h2>
+          <div className="h-px bg-slate-200 grow" />
+        </div>
+
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-12 space-y-12">
+          {poolPhotos.slice().reverse().map((item, index) => (
+            <motion.div
+              key={`grid-${item.id}`}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: (index % 3) * 0.1, duration: 0.6 }}
+              className="break-inside-avoid group cursor-pointer"
+              onClick={() => setSelectedImage(item.image)}
+            >
+              <div className="relative overflow-hidden mb-4 rounded-sm shadow-sm transition-all duration-700 group-hover:shadow-2xl group-hover:-translate-y-1">
+                <img 
+                  src={item.image} 
+                  alt={item.title} 
+                  className="w-full h-auto grayscale-[30%] group-hover:grayscale-0 transition-all duration-1000 scale-[1.01] group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-navy/10 group-hover:bg-transparent transition-colors duration-700" />
+              </div>
+              
+              <div className="pl-4 border-l border-gold/0 group-hover:border-gold transition-all duration-500">
+                <h3 className="text-navy font-serif italic text-lg mb-1">{item.title}</h3>
+                <p className="text-slate-400 text-[10px] uppercase tracking-widest font-black leading-none opacity-0 group-hover:opacity-100 transition-opacity">Ver Detalles</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Aesthetic Footer Note */}
+      <section className="mt-40 max-w-4xl mx-auto px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="p-16 border border-slate-100 bg-white relative"
+        >
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-6">
+            <Camera className="text-gold" size={24} />
+          </div>
+          <h2 className="text-navy font-serif italic text-3xl mb-4">Sigue compartiendo</h2>
+          <p className="text-slate-500 italic text-base leading-relaxed mb-0">
+            Cada foto que nos envías ayuda a contar la historia del club. <br/>
+            Envía tus capturas del restaurante, el gimnasio o las canchas y las iremos agregando aquí.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Sophisticated Modal */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-white/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-20"
+            onClick={() => setSelectedImage(null)}
+          >
+            <motion.button 
+              className="absolute top-8 right-8 text-navy hover:text-gold transition-colors"
+              onClick={() => setSelectedImage(null)}
+            >
+              <X size={40} strokeWidth={1} />
+            </motion.button>
+            
+            <motion.div
+              initial={{ scale: 0.98, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.98, opacity: 0 }}
+              className="relative max-w-7xl w-full h-full flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img 
+                src={selectedImage} 
+                className="max-w-full max-h-full object-contain shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] ring-1 ring-black/5"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 // --- Maintenance ---
 
 const MaintenanceMode = () => {
@@ -1566,6 +1757,7 @@ export default function App() {
         <main className="grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/instalaciones" element={<InstallationsPage />} />
             <Route path="/deportes" element={<SportsPage />} />
             <Route path="/directorio" element={<DirectoryPage />} />
             <Route path="/restaurante" element={<RestaurantPage />} />
