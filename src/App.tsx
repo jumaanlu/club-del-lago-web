@@ -4,7 +4,7 @@ import {
   Instagram, Facebook, Clock, Trophy, Users, 
   Dumbbell, Utensils, Calendar, Smartphone,
   ExternalLink, ArrowRight, Loader2, CheckCircle2, Plus,
-  Camera, Maximize2
+  Camera, Maximize2, Check, Sparkles, Calculator, AlertCircle, Percent
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
@@ -92,6 +92,7 @@ const Navbar = () => {
     { name: 'Deportes', href: '/deportes', isPage: true },
     { name: 'Directorio', href: '/directorio', isPage: true },
     { name: 'Restaurante', href: '/restaurante', isPage: true },
+    { name: 'Eventos', href: '/eventos', isPage: true },
     { name: 'Contacto', href: pathname === '/' ? '#contacto' : '/#contacto' },
   ];
 
@@ -227,17 +228,17 @@ const Hero = () => {
             <div className="space-y-5">
               <div className="flex gap-4 border-b border-slate-100 pb-4">
                 <div className="text-center shrink-0">
-                  <span className="block text-lg font-bold text-navy leading-none">07</span>
-                  <span className="text-[9px] uppercase text-slate-400">Mayo</span>
+                  <span className="block text-lg font-bold text-navy leading-none">19</span>
+                  <span className="text-[9px] uppercase text-slate-400">Junio</span>
                 </div>
-                <p className="text-xs font-medium text-slate-600">Día de las Madres - Celebración Especial.</p>
+                <p className="text-xs font-medium text-slate-600">Celebración del Día del Padre en el área de la Alberca Olímpica.</p>
               </div>
               <div className="flex gap-4">
                 <div className="text-center shrink-0">
-                  <span className="block text-lg font-bold text-navy leading-none">11</span>
+                  <span className="block text-lg font-bold text-navy leading-none">30-31</span>
                   <span className="text-[9px] uppercase text-slate-400">Mayo</span>
                 </div>
-                <p className="text-xs font-medium text-slate-600">Asamblea General Ordinaria.</p>
+                <p className="text-xs font-medium text-slate-600">Copa Lagarto - Torneo de Natación.</p>
               </div>
             </div>
           </div>
@@ -371,21 +372,21 @@ const Restaurant = () => {
               <div className="w-1 bg-gold h-full self-stretch"></div>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wide text-navy">Restaurante Las Palmas</p>
-                <p className="text-xs text-slate-500 italic">Elegancia y tradición en cada platillo. Ideal para desayunos y comidas familiares.</p>
+                <p className="text-xs text-slate-500 italic">Un espacio ideal para disfrutar momentos en familia y compartir la tradición gastronómica del Club.</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
               <div className="w-1 bg-gold h-full self-stretch"></div>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wide text-navy">Snack Brasas</p>
-                <p className="text-xs text-slate-500 italic">Deliciosos cortes y snacks en un ambiente relajado junto a las brasas.</p>
+                <p className="text-xs text-slate-500 italic">Un ambiente relajado pensado para convivir, disfrutar y hacer una pausa durante el día.</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
               <div className="w-1 bg-gold h-full self-stretch"></div>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wide text-navy">Bar Terraza</p>
-                <p className="text-xs text-slate-500 italic">Coctelería premium y botanas con la mejor vista panorámica del club.</p>
+                <p className="text-xs text-slate-500 italic">El lugar perfecto para reunirse, relajarse y disfrutar la vida social del Club.</p>
               </div>
             </div>
           </div>
@@ -746,7 +747,20 @@ const SportsPage = () => {
     'ADULTOS FUTBOL.png',
     'AQUAFITNESS CLASE AM.png',
     'AQUAFITNESS CLASE PM.png',
+    'BASQUETBOL.png',
+    'CLASE DE BAILE.png',
+    'CROSSFIT.png',
+    'DANCE FIT.png',
+    'FITNESS DAMAS.png',
+    'FRONTENIS.png',
+    'FUTBOL MIXTO INFANTIL 2011-2014.png',
+    'FUTBOL MIXTO INFANTIL 2015-2019.png',
+    'FUTBOL MIXTO INFANTIL 2020-2022.png',
+    'GIMNASIA ARTISTICA.png',
     'NATACION MIXTO ADULTOS.png',
+    'NATACION MIXTO ADULTOS-1.png',
+    'NATACIÓN MIXTO INFANTIL.png',
+    'PILATES.png',
     'RITMOS LATINOS.png',
     'SPINNING CLASS.png',
     'TAEKWONDO.png',
@@ -973,7 +987,7 @@ const SportsPage = () => {
                     transition={{ delay: idx * 0.05 }}
                     className="min-w-[280px] md:min-w-[320px] snap-start group cursor-pointer"
                   >
-                    <div className="aspect-[3/4] overflow-hidden border border-slate-100 bg-slate-50 relative p-2">
+                    <div className={`aspect-[3/4] overflow-hidden border border-slate-100 bg-slate-50 relative ${flyer.includes('BASQUETBOL') ? 'p-20 md:p-24' : 'p-2'}`}>
                       <img 
                         src={encodeURI(`/images/flyers/${flyer}`)} 
                         alt={flyer} 
@@ -1062,6 +1076,23 @@ const SportsPage = () => {
           </div>
         </div>
       </section>
+
+      {/* WhatsApp Fixed Button */}
+      <motion.a
+        href="https://wa.me/528134026407"
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-8 right-8 z-[60] bg-[#25D366] text-white p-4 rounded-full shadow-2xl flex items-center justify-center group hover:pr-8 transition-all duration-300"
+      >
+        <Smartphone size={24} />
+        <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 font-bold text-xs uppercase tracking-widest">
+          Contacto Deportes
+        </span>
+      </motion.a>
     </div>
   );
 };
@@ -1269,10 +1300,100 @@ const RestaurantPage = () => {
     }
   ];
 
+  const snackDesayunosData = [
+    {
+      category: 'Desayunos',
+      items: [
+        { name: 'Omelette al gusto', price: '$105', desc: 'Dos huevos con queso manchego y un ingrediente a elegir.' },
+        { name: 'Machacado', price: '$105', desc: 'Natural o a la mexicana con frijoles. (Me. Ord. $58)' },
+        { name: 'Taco de guiso', price: '$19', desc: 'Asado, picadillo, deshebrada, chicharrón, frijoles con queso o nopales.' },
+        { name: 'Gordita de guiso', price: '$28', desc: 'Rellena de asado, picadillo, deshebrada, chicharrón o frijoles con queso.' },
+        { name: 'Huevo al gusto', price: '$85', desc: 'Preparado con un ingrediente a elegir (tocino, salchicha, jamón, etc).' },
+        { name: 'Sándwich Sencillo', price: '$32', desc: 'Pan de caja, mayonesa, jamón, queso y queso amarillo.' },
+        { name: 'Sándwich Especial', price: '$55', desc: 'Con jamón, queso, panela, tomate, lechuga y aguacate.' },
+        { name: 'Quesadilla', price: '$16', desc: '1 pieza en tortilla de harina o maíz con queso manchego.' },
+        { name: 'Sincronizada', price: '$35', desc: 'En harina o maíz, con jamón y queso manchego.' },
+      ]
+    },
+    {
+      category: 'Solo Domingos',
+      items: [
+        { name: 'Taco de barbacoa', price: '$23', desc: 'Especialidad en harina o maíz.' },
+        { name: 'Gordita de barbacoa', price: '$28', desc: 'Rellena de nuestra deliciosa barbacoa.' },
+        { name: 'Barbacoa por Kilo', price: '$450', desc: 'Incluye tortillas amarillas, cilantro, cebolla y salsa.' },
+        { name: 'Medio Kilo Barbacoa', price: '$225', desc: 'Incluye tortillas, cilantro, cebolla y salsa.' },
+      ]
+    },
+    {
+      category: 'Fruta & Licuados',
+      items: [
+        { name: 'Vaso de fruta', price: '$60', desc: 'Mix de fruta de temporada con yogur y granola.' },
+        { name: 'Licuado Vaso', price: '$45', desc: 'Base a elegir (agua, leche, jugo) con fruta de temporada.' },
+        { name: 'Licuado Litro', price: '$79', desc: 'Gran porción de licuado con ingredientes a elección.' },
+      ]
+    },
+    {
+      category: 'Postres & Panadería',
+      items: [
+        { name: 'Bisquet Especial', price: '$32', desc: 'Bisquet de la casa tostado con mantequilla.' },
+        { name: 'Pan dulce del día', price: '$12', desc: 'Selección de panadería artesanal.' },
+        { name: 'Cheesecake / Flan', price: '$58', desc: 'Postre del día elaborado artesanalmente.' },
+        { name: 'Empanada dulce', price: '$15', desc: 'Rellena de cajeta o piña.' },
+      ]
+    }
+  ];
+
+  const snackComidasData = [
+    {
+      category: 'Tacos & Tostadas',
+      items: [
+        { name: 'Tacos de Bistec', price: '$110', desc: 'Orden de cinco tacos en tortilla amarilla con cebolla.' },
+        { name: 'Lorenza de Res', price: '$55', desc: 'Tostada con frijoles, guacamole, res, queso y cebolla.' },
+        { name: 'Percherón', price: '$135', desc: 'Burrito con res, guacamole, pimientos, cebolla, queso y papas.' },
+        { name: 'Pirata', price: '$38 / $96', desc: 'Queso manchego, carne de res, aguacate y cebolla. (Mini $38 / Gde $96)' },
+        { name: 'Taco Guisado', price: '$19', desc: 'En maíz o harina (picadillo, deshebrada, chicharrón, etc).' },
+        { name: 'Taco de Huevo', price: '$19', desc: 'En maíz o harina con ingrediente a elegir.' },
+        { name: 'Sincronizada', price: '$35', desc: 'En harina o maíz con jamón y queso manchego.' },
+        { name: 'Flautas de Res', price: '$55', desc: '4 flautas en vaso con frijoles, lechuga, aguacate y salsa.' },
+      ]
+    },
+    {
+      category: 'Sándwichs & Hamburguesas',
+      items: [
+        { name: 'Hamburguesa de Lago', price: '$115', desc: 'Res, lechuga, tomate, aguacate, mayonesa, queso y jamón.' },
+        { name: 'Hamburguesa Louisiana', price: '$115', desc: 'Pollo estilo Louisiana, lechuga, tomate y aderezo red hot.' },
+        { name: 'Sándwich Especial', price: '$55', desc: 'Pan de caja, jamón, queso, panela, tomate, lechuga y aguacate.' },
+        { name: 'Sándwich Sencillo', price: '$32', desc: 'Pan de caja, mayonesa, jamón, queso y queso amarillo.' },
+        { name: 'Hot Dog de la Casa', price: '$40', desc: 'Clásico con salchicha en pan suave con papas.' },
+      ]
+    },
+    {
+      category: 'Snacks & Complementos',
+      items: [
+        { name: 'Dedos de Queso', price: '$98', desc: 'Queso manchego empanizado con papas a la francesa.' },
+        { name: 'Alitas (8 pzas)', price: '$115', desc: 'Bañadas en Red Hot o BBQ con bastones de apio y aderezo.' },
+        { name: 'Chicken Strips', price: '$70', desc: 'Tiras de pechuga de pollo empanizadas con papas.' },
+        { name: 'Tostitos con Elote', price: '$59', desc: 'Deliciosa botana preparada con elote tierno.' },
+        { name: 'Elote en Vaso', price: '$35', desc: 'Elote preparado con crema, mayonesa, queso y chile.' },
+      ]
+    },
+    {
+      category: 'Postres & Panadería',
+      items: [
+        { name: 'Bisquet Especial', price: '$32', desc: 'Bisquet de la casa tostado con mantequilla.' },
+        { name: 'Pan dulce del día', price: '$12', desc: 'Selección de panadería artesanal.' },
+        { name: 'Cheesecake / Flan', price: '$58', desc: 'Postre del día elaborado artesanalmente.' },
+        { name: 'Empanada dulce', price: '$15', desc: 'Rellena de cajeta o piña.' },
+      ]
+    }
+  ];
+
   const getMenuData = () => {
     switch (menuType) {
       case 'desayunos': return desayunosData;
       case 'terraza': return terrazaData;
+      case 'snack-desayunos': return snackDesayunosData;
+      case 'snack-comidas': return snackComidasData;
       default: return comidasData;
     }
   };
@@ -1283,7 +1404,7 @@ const RestaurantPage = () => {
     {
       id: 'las-palmas',
       title: 'Restaurante Las Palmas',
-      description: 'Nuestra área insignia donde la elegancia y la tradición se encuentran. Disfrute de una experiencia completa en un ambiente refinado.',
+      description: 'Un espacio ideal para disfrutar momentos en familia y compartir la tradición gastronómica del Club.',
       image: '/images/Palmas.jpg',
       menus: [
         { label: 'Menú de Desayunos', type: 'digital', file: null, action: () => { setMenuType('desayunos'); setActiveCategory('Fruta & Hot Cakes'); setShowDetailedMenu(true); } },
@@ -1293,16 +1414,17 @@ const RestaurantPage = () => {
     {
       id: 'snack-brasas',
       title: 'Snack Brasas',
-      description: 'El lugar ideal para una comida informal. Especialidad en cortes y opciones rápidas para disfrutar en un ambiente relajado.',
+      description: 'Un ambiente relajado pensado para convivir, disfrutar y hacer una pausa durante el día.',
       image: '/images/brasas.jpg',
       menus: [
-        { label: 'Ver Menú Snack', type: 'pdf', file: '/menus/menu-snack-brasas.pdf', action: null }
+        { label: 'Menú Desayunos', type: 'digital', file: null, action: () => { setMenuType('snack-desayunos'); setActiveCategory('Desayunos'); setShowDetailedMenu(true); } },
+        { label: 'Menú Comidas', type: 'digital', file: null, action: () => { setMenuType('snack-comidas'); setActiveCategory('Tacos & Tostadas'); setShowDetailedMenu(true); } }
       ]
     },
     {
       id: 'bar-terraza',
       title: 'Bar Terraza',
-      description: 'Relájese con la mejor vista del club. Disfrute de nuestra coctelería premium y botanas artesanales al atardecer.',
+      description: 'El lugar perfecto para reunirse, relajarse y disfrutar la vida social del Club.',
       image: '/images/bar.jpg',
       menus: [
         { label: 'Ver Menú Digital', type: 'digital', file: null, action: () => { setMenuType('terraza'); setActiveCategory('Entradas & Botanas'); setShowDetailedMenu(true); } }
@@ -1475,6 +1597,637 @@ const RestaurantPage = () => {
   );
 };
 
+const EventosPage = () => {
+  const [activeTab, setActiveTab] = useState<'all' | 'renta' | 'socios'>('all');
+  const [selectedSpaceId, setSelectedSpaceId] = useState<string | null>(null);
+  
+  // Calculator state
+  const [calcSpace, setCalcSpace] = useState<string>('laguito1');
+  const [calcGuests, setCalcGuests] = useState<number>(50);
+  const [calcIsSocio, setCalcIsSocio] = useState<boolean>(true);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const spaces = [
+    {
+      id: 'laguito1',
+      title: 'Laguito 1',
+      price: 4450,
+      formatPrice: '$4,450',
+      tagline: 'Elegancia junto al agua',
+      image: '/images/gallery/alberca 1.png',
+      capacity: '20 a 100 personas',
+      maxCap: 100,
+      minCap: 20,
+      duration: '5 horas',
+      schedule: 'Matutino y Vespertino. Horario Nocturno hasta 1:00 am.',
+      days: 'Lunes a Domingo',
+      type: 'renta',
+      desc: 'Privilegiada ubicación con espectacular vista y frescura ideal para bodas íntimas, aniversarios y recepciones elegantes.',
+      features: [
+        'Ubicación estelar con vista panorámica al lago',
+        'Hasta 100 invitados de capacidad regulada',
+        'Montajes y mobiliario básico del Club disponible',
+        'Uso por 5 horas de distinción',
+        'Horario extendido nocturno hasta la 1:00 am'
+      ]
+    },
+    {
+      id: 'laguito2',
+      title: 'Laguito 2',
+      price: 4450,
+      formatPrice: '$4,450',
+      tagline: 'Refinado ambiente de jardín',
+      image: '/images/gallery/alberca 2.png',
+      capacity: '50 personas',
+      maxCap: 50,
+      minCap: 10,
+      duration: '5 horas',
+      schedule: 'Matutino y Vespertino. Horario Nocturno hasta 1:00 am.',
+      days: 'Lunes a Domingo',
+      type: 'renta',
+      desc: 'Espacio perfectamente acondicionado para banquetes de tamaño medio en un entorno rodeado de la flora emblemática de nuestra casa.',
+      features: [
+        'Entorno natural de gran privacidad',
+        'Capacidad óptima para 50 personas',
+        'Instalaciones de primer nivel con accesos limpios',
+        'Servicio de mantenimiento pre-evento asistido',
+        'Estacionamiento preferente para invitados'
+      ]
+    },
+    {
+      id: 'bar',
+      title: 'El Bar del Club',
+      price: 5000,
+      formatPrice: '$5,000',
+      tagline: 'Distinción y sofisticación diurna',
+      image: '/images/bar.jpg',
+      capacity: '90 personas',
+      maxCap: 90,
+      minCap: 10,
+      duration: 'De 10:00 am a 3:00 pm',
+      schedule: 'Horario de renta diurno de 10:00 am a 3:00 pm.',
+      days: 'Lunes a Domingo',
+      type: 'renta',
+      desc: 'Su atmósfera elegante y moderna lo hace idóneo para cócteles empresariales, lanzamientos o comidas de negocios exclusivas de día.',
+      features: [
+        'Mobiliario lounge de lujo y barra habilitada',
+        'Capacidad de hasta 90 personas',
+        'Climatización e iluminación regulable',
+        'Acústica óptima',
+        'Uso exclusivo durante la franja diurna'
+      ]
+    },
+    {
+      id: 'palapadejuegos',
+      title: 'Palapa de Juegos',
+      price: 3000,
+      formatPrice: '$3,000',
+      tagline: 'Diversión y calidez familiar',
+      image: '/images/gallery/alberca 3.png',
+      capacity: '50 personas',
+      maxCap: 50,
+      minCap: 10,
+      duration: '5 horas',
+      schedule: 'Horario Nocturno y Vespertino. Horario Nocturno hasta 1:00 am.',
+      days: 'Lunes a Domingo',
+      type: 'renta',
+      desc: 'Excelente opción para festejos de los pequeños y comidas casuales rodeado de asombrosos juegos recreativos para los chicos.',
+      features: [
+        'Área interactiva infantil segura adyacente',
+        'Capacidad de hasta 50 personas en comodidad',
+        'Circulación de aire idónea y sombra agradable',
+        'Opciones exclusivas vespertinas y nocturnas',
+        'Cercanía estratégica con sanitarios del Club'
+      ]
+    },
+    {
+      id: 'palapa4',
+      title: 'Palapa 4',
+      price: 3400,
+      formatPrice: '$3,400',
+      tagline: 'Amplitud y diseño al aire libre',
+      image: '/images/gallery/alberca 4.png',
+      capacity: '60 personas',
+      maxCap: 60,
+      minCap: 10,
+      duration: '5 horas',
+      schedule: 'Matutino y Vespertino. Horario Nocturno hasta 1:00 am.',
+      days: 'Lunes a Domingo',
+      type: 'renta',
+      desc: 'Ideal para celebrar almuerzos campestres, parrilladas familiares o eventos dinámicos semiformales de cara a las canchas deportivas.',
+      features: [
+        'Vistas hermosas a la Sierra Madre',
+        'Capacidad holgada de hasta 60 personas',
+        'Estación de montaje de alimentos integrada',
+        'Ventilación natural superior y sombra integral',
+        'Flexibilidad total para acomodo de mesas y catering'
+      ]
+    },
+    {
+      id: 'asadores',
+      title: 'Área de Asadores',
+      price: 2800,
+      formatPrice: '$2,800',
+      tagline: 'La tradición de la cocina a la brasa',
+      image: '/images/brasas.jpg',
+      capacity: '20 personas',
+      maxCap: 20,
+      minCap: 5,
+      duration: '5 horas',
+      schedule: 'Matutino y Vespertino. Horario Nocturno hasta 1:00 am.',
+      days: 'Lunes a Miércoles',
+      type: 'renta',
+      desc: 'Excelente para compartir la alta cocina de la parrilla regia en exclusiva. Un entorno rústico y sumamente acogedor para petit comités.',
+      features: [
+        'Renta preferente de Lunes a Miércoles',
+        'Capacidad íntima para hasta 20 personas',
+        'Asadores profesionales listos para su uso directo',
+        'Ambiente rústico sofisticado',
+        'Disfruta de la mejor convivencia norteña'
+      ]
+    },
+    {
+      id: 'solosocios',
+      title: 'Evento Solo Socios',
+      price: 0,
+      formatPrice: 'Sin Costo',
+      tagline: 'Privilegio exclusivo de nuestra comunidad',
+      image: '/images/Palmas.jpg',
+      capacity: 'Socio + Máx 2 invitados con pase',
+      maxCap: 3, 
+      minCap: 1,
+      duration: '5 horas',
+      schedule: 'Horario Nocturno hasta las 1:00 am.',
+      days: 'Lunes a Domingo',
+      type: 'socios',
+      desc: 'Pensado como obsequio exclusivo para socios que celebran ocasiones íntimas en su segundo hogar sin costo de renta base de área.',
+      features: [
+        'Totalmente SIN COSTO de renta de área',
+        'Máximo de 2 invitados externos con pase especial',
+        'Servicio de montaje básico de cortesía',
+        'Uso del espacio por hasta 5 majestuosas horas',
+        'Disponibilidad los 7 días de la semana previo registro'
+      ]
+    }
+  ];
+
+  const filteredSpaces = spaces.filter(s => {
+    if (activeTab === 'all') return true;
+    return s.type === activeTab;
+  });
+
+  const selectedCalcSpace = spaces.find(s => s.id === calcSpace) || spaces[0];
+
+  const recommendedWaiters = Math.max(1, Math.ceil(calcGuests / 20));
+
+  const getCalculatedPrice = () => {
+    if (calcSpace === 'solosocios') {
+      return 0;
+    }
+    return selectedCalcSpace.price;
+  };
+
+  const calculatedBasePrice = getCalculatedPrice();
+  const dateReservationFee = 550;
+  const totalCost = calculatedBasePrice + dateReservationFee;
+
+  const handleConsultSpace = (spaceName: string) => {
+    const text = `Hola Daniel Gonzalez, me gustaría solicitar informes sobre disponibilidad de espacio para el área de eventos "${spaceName}" en el Club del Lago. ¡Muchas gracias!`;
+    const url = `https://wa.me/528123870840?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleSendQuote = () => {
+    const text = `Hola Daniel Gonzalez, he realizado una simulación de evento en la plataforma de Club del Lago:
+- Espacio Seleccionado: ${selectedCalcSpace.title}
+- Número de Invitados: ${calcGuests} personas
+- ¿Soy Socio del Club?: ${calcIsSocio ? 'Sí' : 'No'}
+- Costo de Renta Base: ${calculatedBasePrice === 0 ? 'Sin Costo' : `$${calculatedBasePrice.toLocaleString()}`}
+- Depósito de Confirmación: $${dateReservationFee}
+- Total Estimado de Renta: $${totalCost.toLocaleString()}
+- Servicio de Meseros sugerido/comentario: Contratarse en Área de Eventos (${recommendedWaiters} meseros recomendados para ${calcGuests} pers.)
+
+Me gustaría confirmar la disponibilidad de fecha. Quedo al pendiente de los pasos a seguir.`;
+    const url = `https://wa.me/528123870840?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  return (
+    <div className="pt-20 bg-slate-50 min-h-screen font-sans">
+      {/* Hero Banner */}
+      <section className="relative py-28 bg-navy text-white overflow-hidden border-b-4 border-gold">
+        <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2669&auto=format&fit=crop')] bg-cover bg-center" />
+        <div className="absolute inset-0 hero-gradient opacity-60 z-10" />
+        <div className="max-w-7xl mx-auto px-6 relative z-20 flex flex-col items-center text-center">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="text-gold font-bold tracking-[0.4em] uppercase text-xs mb-4 block italic">Servicios Exclusivos de Renta</span>
+            <span className="text-xl md:text-2xl font-serif italic text-slate-300 block mb-3 font-normal">Más que eventos,</span>
+            <h1 className="text-4xl md:text-7xl font-display font-black tracking-tighter uppercase text-white mb-6 drop-shadow-md">
+              Creamos Recuerdos
+            </h1>
+            <p className="text-slate-200 italic text-base md:text-lg max-w-3xl leading-relaxed mx-auto font-light">
+              Descubra las áreas sociales más selectas de Monterrey. Con capacidades de 20 a 100 comensales, diseñamos de la mano con usted banquetes de gala, cumpleaños, bodas o convivios deportivos de total distinción.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Main Spaces Exploration */}
+      <section className="py-20 max-w-7xl mx-auto px-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 pb-6 border-b border-slate-200">
+          <div>
+            <span className="text-gold font-bold text-xs tracking-widest uppercase block italic mb-2">Espacios Sociales Recreativos</span>
+            <h2 className="text-navy text-2xl md:text-3xl font-display font-bold uppercase leading-tight">Explora nuestras Áreas de Eventos</h2>
+          </div>
+          
+          {/* Tabs Filter */}
+          <div className="flex gap-2 bg-white p-1 rounded-sm shadow-sm border border-slate-200">
+            <button
+              onClick={() => setActiveTab('all')}
+              className={`px-4 py-2 text-[10px] font-black uppercase tracking-wider rounded-sm transition-all ${
+                activeTab === 'all' 
+                  ? 'bg-navy text-white' 
+                  : 'text-slate-500 hover:text-navy hover:bg-slate-100'
+              }`}
+            >
+              Todos los espacios
+            </button>
+            <button
+              onClick={() => setActiveTab('renta')}
+              className={`px-4 py-2 text-[10px] font-black uppercase tracking-wider rounded-sm transition-all ${
+                activeTab === 'renta' 
+                  ? 'bg-navy text-white' 
+                  : 'text-slate-500 hover:text-navy hover:bg-slate-100'
+              }`}
+            >
+              En Renta regular
+            </button>
+            <button
+              onClick={() => setActiveTab('socios')}
+              className={`px-4 py-2 text-[10px] font-black uppercase tracking-wider rounded-sm transition-all ${
+                activeTab === 'socios' 
+                  ? 'bg-navy text-white' 
+                  : 'text-slate-500 hover:text-navy hover:bg-slate-100'
+              }`}
+            >
+              Exclusivo de Socios
+            </button>
+          </div>
+        </div>
+
+        {/* Areas Card List Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+          <AnimatePresence mode="popLayout">
+            {filteredSpaces.map((space) => {
+              const isSelected = selectedSpaceId === space.id;
+              return (
+                <motion.div
+                  key={space.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4 }}
+                  className="bg-white rounded-sm overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col"
+                >
+                  {/* Card Image */}
+                  <div className="relative h-56 overflow-hidden bg-slate-100 group">
+                    <img 
+                      src={space.image} 
+                      alt={space.title} 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-xs px-3 py-1 text-xs font-bold text-navy shadow-xs rounded-sm uppercase tracking-wide border border-gold">
+                      {space.formatPrice === 'Sin Costo' ? (
+                        <span className="text-forest">Sin Costo</span>
+                      ) : (
+                        <span>{space.formatPrice}</span>
+                      )}
+                    </div>
+                    {space.type === 'socios' && (
+                      <div className="absolute top-4 left-4 bg-gold px-2.5 py-0.5 text-[9px] font-bold text-white uppercase tracking-wider shadow-xs rounded-sm">
+                        Solo Socios
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Card Info */}
+                  <div className="p-6 grow flex flex-col justify-between">
+                    <div>
+                      <span className="text-gold font-bold text-[10px] uppercase tracking-widest block italic mb-1">{space.tagline}</span>
+                      <h3 className="text-navy text-lg font-bold uppercase mb-3">{space.title}</h3>
+                      <p className="text-slate-500 text-xs italic leading-relaxed mb-6">{space.desc}</p>
+                      
+                      {/* Attributes list */}
+                      <div className="space-y-2 border-t border-slate-100 pt-4 mb-6">
+                        <div className="flex items-center gap-3 text-[11px] text-slate-600 font-medium">
+                          <Calendar size={13} className="text-gold shrink-0" />
+                          <span>Días: <span className="text-slate-800 font-semibold">{space.days}</span></span>
+                        </div>
+                        <div className="flex items-center gap-3 text-[11px] text-slate-600 font-medium">
+                          <Users size={13} className="text-gold shrink-0" />
+                          <span>Capacidad: <span className="text-slate-800 font-semibold">{space.capacity}</span></span>
+                        </div>
+                        <div className="flex items-center gap-3 text-[11px] text-slate-600 font-medium">
+                          <Clock size={13} className="text-gold shrink-0" />
+                          <span>Horario: <span className="text-slate-800 font-semibold">{space.schedule}</span></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      {/* Dynamic Expandable Bullet List */}
+                      <button
+                        onClick={() => setSelectedSpaceId(isSelected ? null : space.id)}
+                        className="text-[10px] text-navy hover:text-gold uppercase font-black tracking-wider flex items-center gap-2 transition-colors border-b border-transparent hover:border-gold pb-0.5"
+                      >
+                        {isSelected ? 'Ocultar Amenidades' : 'Ver Amenidades del Espacio'}
+                        <Plus size={12} className={`transition-transform duration-300 ${isSelected ? 'rotate-45' : ''}`} />
+                      </button>
+
+                      {isSelected && (
+                        <motion.ul 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="bg-slate-50 rounded-sm p-4 space-y-2 mt-2 select-none border border-slate-100"
+                        >
+                          {space.features.map((feat, index) => (
+                            <li key={index} className="flex items-start gap-2 text-[10px] text-slate-600 font-medium leading-relaxed">
+                              <Check size={11} className="text-gold mt-1 shrink-0" />
+                              <span>{feat}</span>
+                            </li>
+                          ))}
+                        </motion.ul>
+                      )}
+
+                      <div className="pt-4 border-t border-slate-100 flex gap-2">
+                        <button
+                          onClick={() => handleConsultSpace(space.title)}
+                          className="w-full bg-navy text-white border border-navy px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:border-gold transition-all shadow-sm text-center"
+                        >
+                          Ver Disponibilidad
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+
+        {/* Cost Estimation Simulator Widget */}
+        <div className="bg-white border border-slate-200 rounded-sm shadow-sm md:p-10 p-6 mb-24 grid grid-cols-1 lg:grid-cols-12 gap-10 relative overflow-hidden">
+          <div className="lg:col-span-12">
+            <div className="flex items-center gap-2 mb-2">
+              <Calculator size={16} className="text-gold" />
+              <span className="text-gold font-bold text-xs tracking-widest uppercase block italic">Cotizador Digital Interactivo</span>
+            </div>
+            <h2 className="text-navy text-2xl md:text-3xl font-display font-bold uppercase mb-4">Simulador de Presupuesto</h2>
+            <p className="text-slate-500 text-xs italic max-w-2xl leading-relaxed">
+              Planifique su celebración de forma transparente. Elija el área social de su preferencia, especifique el número total de invitados y su estatus de socio para autocalcular el monto estimado de su reservación.
+            </p>
+          </div>
+
+          {/* Left Column Controls */}
+          <div className="lg:col-span-7 space-y-8 pr-0 lg:pr-6 border-r-0 lg:border-r border-slate-200">
+            {/* Space selector */}
+            <div className="space-y-3">
+              <label className="block text-navy font-bold text-[10px] uppercase tracking-widest">
+                1. Selecciona el Área Social
+              </label>
+              <select
+                value={calcSpace}
+                onChange={(e) => setCalcSpace(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 p-3 text-xs text-navy font-medium tracking-wide focus:outline-hidden focus:ring-1 focus:ring-gold focus:border-gold cursor-pointer rounded-sm"
+              >
+                {spaces.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.title} ({s.formatPrice})
+                  </option>
+                ))}
+              </select>
+              <p className="text-slate-400 text-[9px] italic uppercase tracking-wider">
+                Capacidad Recomendada del Espacio: <span className="text-navy font-semibold">{selectedCalcSpace.capacity}</span>
+              </p>
+            </div>
+
+            {/* Guest slider */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <label className="block text-navy font-bold text-[10px] uppercase tracking-widest">
+                  2. Ingresa tus Invitados Estimados
+                </label>
+                <span className="bg-navy/5 text-navy font-bold text-xs px-2.5 py-0.5 tracking-wider rounded-sm">
+                  {calcGuests} personas
+                </span>
+              </div>
+              <input
+                type="range"
+                min="5"
+                max={selectedCalcSpace.id === 'solosocios' ? 3 : 130}
+                value={calcGuests}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  setCalcGuests(val);
+                }}
+                className="w-full accent-navy h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer"
+              />
+              {calcGuests > selectedCalcSpace.maxCap && (
+                <div className="bg-amber-50 text-amber-700 border border-amber-200 px-3.5 py-2.5 text-[10px] italic flex items-center gap-2 rounded-sm leading-normal">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>
+                    Nota: La cantidad excede la capacidad recomendada de {selectedCalcSpace.capacity} para {selectedCalcSpace.title}.
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Socio Toggle */}
+            <div className="bg-slate-50 border border-slate-100 p-4 flex items-center justify-between rounded-sm">
+              <div className="space-y-1">
+                <span className="text-navy font-bold text-[10px] uppercase tracking-widest block">
+                  3. ¿Eres Socio Activo del Club?
+                </span>
+                <span className="text-slate-500 text-[10px] italic leading-relaxed block">
+                  Beneficios preferenciales del Club para su comunidad exclusiva
+                </span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={calcIsSocio} 
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setCalcIsSocio(checked);
+                    // Force solosocios constraint
+                    if (!checked && calcSpace === 'solosocios') {
+                      setCalcSpace('laguito1');
+                    }
+                  }}
+                  className="sr-only peer" 
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-navy"></div>
+              </label>
+            </div>
+            
+            {calcSpace === 'solosocios' && (
+              <div className="bg-blue-50 text-navy border border-blue-200 px-4 py-3.5 text-[10px] italic flex items-start gap-2 rounded-sm leading-relaxed">
+                <Sparkles size={14} className="text-gold mt-0.5 shrink-0 animate-pulse" />
+                <span>
+                  <strong>¡Beneficio de Socios!</strong> Este paquete especial está reservado estrictamente para convivir únicamente entre Socios e incluye montaje básico del Club gratuito. Se permite un límite estricto de hasta 2 invitados externos con pase pre-aprobado.
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column Summary Card */}
+          <div className="lg:col-span-5 bg-navy text-white rounded-sm p-8 shadow-xs relative overflow-hidden flex flex-col justify-between">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full translate-x-12 -translate-y-12" />
+            
+            <div>
+              <span className="text-gold font-bold text-[9px] uppercase tracking-widest block italic mb-2">Desglose Estimado</span>
+              <h3 className="text-white text-lg font-serif italic mb-6 leading-none">Resumen de Cotización</h3>
+              
+              <div className="space-y-4 border-b border-white/15 pb-6">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-300">Base Renta ({selectedCalcSpace.title}):</span>
+                  <span className="font-bold tracking-wider">
+                    {calculatedBasePrice === 0 ? 'Sin Renta / $0' : `$${calculatedBasePrice.toLocaleString()}`}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-slate-300 font-medium">Depósito de Confirmación:</span>
+                  <span className="font-bold tracking-wider">$550</span>
+                </div>
+                <div className="flex justify-between items-start text-xs">
+                  <span className="text-slate-300 font-medium flex items-center gap-1.5">
+                    Meseros Recomendados:
+                  </span>
+                  <span className="text-right text-slate-400 text-[10px] block font-medium">
+                    {recommendedWaiters} meseros <br/>
+                    <span className="text-[8px] italic tracking-tight">(Se contratan por separado)</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* Total Card */}
+              <div className="py-6 flex justify-between items-baseline">
+                <span className="text-gold font-bold text-[10px] uppercase tracking-widest leading-none">Total Estimado:</span>
+                <span className="text-3xl font-bold text-gold font-sans tracking-tight">
+                  ${totalCost.toLocaleString()}
+                  <span className="text-[10px] text-white italic font-normal block text-right mt-1 tracking-normal">pesos m.n.</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-4 mt-6">
+              <button
+                onClick={handleSendQuote}
+                className="w-full bg-gold text-white hover:bg-white hover:text-navy px-5 py-3.5 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm shadow-sm flex items-center justify-center gap-2"
+              >
+                <Smartphone size={14} /> Solicitar Fecha por WhatsApp
+              </button>
+              <p className="text-slate-400 text-[8px] uppercase tracking-widest text-center italic">
+                Sujeto a confirmación y disponibilidad del Club
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Policies and Terms Block */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24">
+          <div className="bg-white border border-slate-200 p-8 rounded-sm shadow-xs">
+            <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+              <span className="p-1.5 rounded-sm bg-gold/10 text-gold">
+                <CheckCircle2 size={16} />
+              </span>
+              <h3 className="text-navy text-sm font-bold uppercase tracking-wider">Términos y Condiciones Generales</h3>
+            </div>
+            <div className="space-y-4 text-xs italic text-slate-600 leading-relaxed">
+              <p className="accent-border-l-gold pl-3 py-1 bg-slate-50 border-l-4">
+                La reservación y confirmación oficial de cualquier fecha de las áreas sociales requiere invariablemente un <strong>pago de $550</strong> de garantía.
+              </p>
+              <p className="accent-border-l-gold pl-3 py-1 bg-slate-50 border-l-4">
+                Los eventos realizados únicamente para <strong>SOCIOS</strong> no tienen costo de renta de espacio, incluyen el servicio de montaje básico y dan acceso al titular más un límite de 2 invitados externos con pase controlado.
+              </p>
+              <p className="accent-border-l-gold pl-3 py-1 bg-slate-50 border-l-4">
+                En todos los espacios de renta, el servicio es por un bloque inicial de <strong>5 horas</strong>, con horario extendido en la noche disponible hasta la <strong>1:00 am</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white border border-slate-200 p-8 rounded-sm shadow-xs">
+            <div className="flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+              <span className="p-1.5 rounded-sm bg-navy/5 text-navy">
+                <AlertCircle size={16} />
+              </span>
+              <h3 className="text-navy text-sm font-bold uppercase tracking-wider">Servicio de Meseros & Cancelaciones</h3>
+            </div>
+            <div className="space-y-4 text-xs italic text-slate-600 leading-relaxed">
+              <p className="accent-border-l-navy pl-3 py-1 bg-slate-50 border-l-4">
+                <strong>Política estricta de Cancelaciones:</strong> Deberán realizarse con un mínimo de <strong>7 días de anticipación</strong>. En caso de cancelaciones tardías, se aplicará una ineludible <strong>penalización de $550</strong> cargada directo a la cuota regular del socio.
+              </p>
+              <p className="accent-border-l-navy pl-3 py-1 bg-slate-50 border-l-4">
+                El <strong>servicio de meseros</strong> se debe coordinar y contratar de manera directa y obligatoria en el <strong>departamento de Eventos</strong> para asignar el personal calificado de acuerdo al número de comensales y la dinámica del Club.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Daniel Gonzalez Contact Frame */}
+        <div className="bg-slate-900 text-white rounded-sm border border-slate-800 md:p-12 p-8 relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1543157142-f84585135722?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center" />
+          
+          <div className="relative z-10 max-w-xl text-center md:text-left">
+            <span className="text-gold font-bold text-xs tracking-widest uppercase block italic mb-2">Asesoría Directa de Celebraciones</span>
+            <h3 className="text-xl md:text-2xl font-serif italic mb-4 leading-normal normal-case text-white">¿Desea asesoría personalizada para su festejo?</h3>
+            <p className="text-slate-300 text-xs italic leading-relaxed font-light">
+              Póngase en contacto con nuestro Coordinador de Eventos para recorrer y seleccionar el espacio ideal, cotizar servicios gastronómicos especiales del restaurante y asegurar la fecha de sus sueños.
+            </p>
+            
+            <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center">
+              <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-sm">
+                <Users size={14} className="text-gold" />
+                <span className="text-xs font-semibold tracking-wide">Daniel González</span>
+              </div>
+              <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-sm">
+                <Smartphone size={14} className="text-gold" />
+                <span className="text-xs font-bold tracking-widest">81-23-87-08-40</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative z-10 shrink-0 w-full sm:w-auto flex flex-col gap-3">
+            <a 
+              href="https://wa.me/528123870840?text=Hola%20Daniel,%20me%20gustar%C3%ADa%20obtener%20informes%20para%20realizar%20un%20evento%20en%20Club%20del%20Lago."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto bg-green-600 inline-flex items-center justify-center gap-2 hover:bg-green-500 text-white font-bold px-6 py-3 text-[10px] uppercase tracking-widest transition-colors rounded-sm shadow-md"
+            >
+              <Smartphone size={14} /> Chatear por WhatsApp
+            </a>
+            <a 
+              href="tel:8123870840" 
+              className="w-full sm:w-auto border border-gold inline-flex items-center justify-center gap-2 hover:bg-gold text-gold hover:text-navy font-bold px-6 py-3 text-[10px] uppercase tracking-widest transition-colors rounded-sm shadow-sm"
+            >
+              <Phone size={14} /> Llamada Telefónica
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
 const HomePage = () => {
   return (
     <>
@@ -1499,6 +2252,7 @@ const DirectoryPage = () => {
 const InstallationsPage = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentPool, setCurrentPool] = useState(0);
+  const [currentGym, setCurrentGym] = useState(0);
 
   const poolPhotos = [
     { id: 1, title: 'Alberca Olímpica Lagartos', image: '/images/gallery/ALBERCA INTERIROR.png', desc: 'Nuestra icónica alberca techada, el alma deportiva del club.' },
@@ -1512,17 +2266,40 @@ const InstallationsPage = () => {
     { id: 9, title: 'Momentos de Sol', image: '/images/gallery/ALBERCA INTERIROR 2.png', desc: 'El corazón del verano en Club del Lago.' },
   ];
 
+  const gymPhotos = [
+    { id: 1, title: 'Equipamiento de Vanguardia', image: '/images/gallery/gym 2.png', desc: 'Entrena con la mejor panorámica mientras te superas a ti mismo.' },
+    { id: 2, title: 'Zona de Cardio', image: '/images/gallery/gym 3.png', desc: 'Máquinas de última generación para tu salud cardiovascular.' },
+    { id: 3, title: 'Peso Libre', image: '/images/gallery/gym 4.png', desc: 'Espacios amplios y organizados para tu rutina de fuerza.' },
+    { id: 4, title: 'Entrenamiento Integral', image: '/images/gallery/gym 5.png', desc: 'Cada detalle pensado para una experiencia fitness completa.' },
+    { id: 5, title: 'Superación Diaria', image: '/images/gallery/gym 6.png', desc: 'El ambiente perfecto para mantener tu motivación al máximo.' },
+    { id: 6, title: 'Tecnología Deportiva', image: '/images/gallery/gym 7.png', desc: 'Equipos Cybex diseñados para un movimiento natural y seguro.' },
+    { id: 7, title: 'Rendimiento Extremo', image: '/images/gallery/gym 8.png', desc: 'Lleva tu capacidad física al siguiente nivel con nuestras instalaciones.' },
+    { id: 8, title: 'Paz y Esfuerzo', image: '/images/gallery/gym 9.png', desc: 'Un espacio donde el bienestar mental y físico se encuentran.' },
+    { id: 9, title: 'Comunidad Fitness', image: '/images/gallery/gym 10.png', desc: 'Únete a los mejores entrenamientos en un entorno exclusivo.' },
+    { id: 10, title: 'Equipamiento Premium', image: '/images/gallery/gym 11.png', desc: 'Variedad de máquinas para trabajar cada grupo muscular.' },
+    { id: 11, title: 'Fuerza sin Límites', image: '/images/gallery/gym 12.png', desc: 'Instalaciones diseñadas para el alto rendimiento.' },
+  ];
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    const timer = setInterval(() => {
+    
+    const poolTimer = setInterval(() => {
       setCurrentPool((prev) => (prev + 1) % poolPhotos.length);
     }, 6000);
-    return () => clearInterval(timer);
-  }, [poolPhotos.length]);
+
+    const gymTimer = setInterval(() => {
+      setCurrentGym((prev) => (prev + 1) % gymPhotos.length);
+    }, 7000); // Slightly different timing for variety
+
+    return () => {
+      clearInterval(poolTimer);
+      clearInterval(gymTimer);
+    };
+  }, [poolPhotos.length, gymPhotos.length]);
 
   return (
     <div className="pt-20 bg-[#fdfdfd] min-h-screen pb-32">
-      {/* Editorial Header */}
+      {/* Editorial Header - Pools */}
       <section className="max-w-7xl mx-auto px-6 pt-24 pb-12 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1540,16 +2317,16 @@ const InstallationsPage = () => {
         </motion.div>
       </section>
 
-      {/* Automatic Aesthetic Carousel */}
-      <section className="max-w-7xl mx-auto px-6 mb-32">
+      {/* Cinematic Gallery - Pools */}
+      <section className="max-w-7xl mx-auto px-6 mb-40">
         <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-sm bg-slate-100 shadow-2xl group">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentPool}
-              initial={{ opacity: 0, scale: 1.05 }}
+              initial={{ opacity: 0, scale: 1.02 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
               className="absolute inset-0 cursor-pointer"
               onClick={() => setSelectedImage(poolPhotos[currentPool].image)}
             >
@@ -1558,75 +2335,115 @@ const InstallationsPage = () => {
                 alt={poolPhotos[currentPool].title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               
-              <div className="absolute bottom-12 left-12 right-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="max-w-xl">
                   <motion.h2 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="text-white font-serif italic text-3xl md:text-5xl mb-2"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-white font-serif italic text-2xl md:text-3xl mb-1"
                   >
                     {poolPhotos[currentPool].title}
                   </motion.h2>
                   <motion.p 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                    className="text-white/70 italic text-sm md:text-lg font-light"
+                    className="text-white/60 italic text-sm md:text-base font-light"
                   >
                     {poolPhotos[currentPool].desc}
                   </motion.p>
-                </div>
-                <div className="flex gap-2">
-                  {poolPhotos.map((_, idx) => (
-                    <button 
-                      key={idx}
-                      onClick={(e) => { e.stopPropagation(); setCurrentPool(idx); }}
-                      className={`h-1 transition-all duration-500 rounded-full ${idx === currentPool ? 'w-12 bg-gold' : 'w-4 bg-white/30'}`}
-                    />
-                  ))}
                 </div>
               </div>
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* Thumbnails Navigation */}
+        <div className="mt-4 flex gap-2 overflow-x-auto pb-4 no-scrollbar">
+          {poolPhotos.map((item, idx) => (
+            <button
+              key={`thumb-pool-${item.id}`}
+              onClick={() => setCurrentPool(idx)}
+              className={`relative flex-shrink-0 w-24 md:w-32 aspect-video rounded-sm overflow-hidden transition-all duration-500 ${idx === currentPool ? 'ring-2 ring-gold scale-105 z-10' : 'opacity-40 hover:opacity-100'}`}
+            >
+              <img src={item.image} className="w-full h-full object-cover" alt="" />
+            </button>
+          ))}
+        </div>
       </section>
 
-      {/* Organic Gallery - More Collections */}
-      <section className="max-w-7xl mx-auto px-6">
-        <div className="mb-16 flex items-center gap-4">
-          <div className="h-px bg-slate-200 grow" />
-          <h2 className="text-navy/40 font-serif italic text-2xl px-4">Galería de Momentos</h2>
-          <div className="h-px bg-slate-200 grow" />
-        </div>
+      {/* Editorial Header - Gym */}
+      <section className="max-w-7xl mx-auto px-6 pb-12 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <span className="text-gold font-bold text-[9px] uppercase tracking-[0.5em] mb-6 block">Equipamiento Cybex • Alto Rendimiento</span>
+          <h2 className="text-5xl md:text-7xl font-serif italic text-navy mb-8 leading-tight">
+            Nuestro Gimnasio
+          </h2>
+          <div className="w-16 h-px bg-gold/40 mx-auto mb-8" />
+          <p className="text-slate-500 italic text-xl max-w-2xl mx-auto leading-relaxed px-8">
+            Un entorno diseñado para la transformación física con la mejor tecnología y vistas panorámicas.
+          </p>
+        </motion.div>
+      </section>
 
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-12 space-y-12">
-          {poolPhotos.slice().reverse().map((item, index) => (
+      {/* Cinematic Gallery - Gym */}
+      <section className="max-w-7xl mx-auto px-6 mb-32">
+        <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-sm bg-slate-100 shadow-2xl group border-l-4 border-gold">
+          <AnimatePresence mode="wait">
             <motion.div
-              key={`grid-${item.id}`}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (index % 3) * 0.1, duration: 0.6 }}
-              className="break-inside-avoid group cursor-pointer"
-              onClick={() => setSelectedImage(item.image)}
+              key={currentGym}
+              initial={{ opacity: 0, scale: 1.02 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="absolute inset-0 cursor-pointer"
+              onClick={() => setSelectedImage(gymPhotos[currentGym].image)}
             >
-              <div className="relative overflow-hidden mb-4 rounded-sm shadow-sm transition-all duration-700 group-hover:shadow-2xl group-hover:-translate-y-1">
-                <img 
-                  src={item.image} 
-                  alt={item.title} 
-                  className="w-full h-auto grayscale-[30%] group-hover:grayscale-0 transition-all duration-1000 scale-[1.01] group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-navy/10 group-hover:bg-transparent transition-colors duration-700" />
-              </div>
+              <img 
+                src={gymPhotos[currentGym].image} 
+                alt={gymPhotos[currentGym].title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               
-              <div className="pl-4 border-l border-gold/0 group-hover:border-gold transition-all duration-500">
-                <h3 className="text-navy font-serif italic text-lg mb-1">{item.title}</h3>
-                <p className="text-slate-400 text-[10px] uppercase tracking-widest font-black leading-none opacity-0 group-hover:opacity-100 transition-opacity">Ver Detalles</p>
+              <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="max-w-xl">
+                  <motion.h2 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-white font-serif italic text-2xl md:text-4xl mb-1"
+                  >
+                    {gymPhotos[currentGym].title}
+                  </motion.h2>
+                  <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-white/60 italic text-sm md:text-base font-light"
+                  >
+                    {gymPhotos[currentGym].desc}
+                  </motion.p>
+                </div>
               </div>
             </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Thumbnails Navigation */}
+        <div className="mt-4 flex gap-2 overflow-x-auto pb-4 no-scrollbar">
+          {gymPhotos.map((item, idx) => (
+            <button
+              key={`thumb-gym-${item.id}`}
+              onClick={() => setCurrentGym(idx)}
+              className={`relative flex-shrink-0 w-24 md:w-32 aspect-video rounded-sm overflow-hidden transition-all duration-500 ${idx === currentGym ? 'ring-2 ring-gold scale-105 z-10' : 'opacity-40 hover:opacity-100'}`}
+            >
+              <img src={item.image} className="w-full h-full object-cover" alt="" />
+            </button>
           ))}
         </div>
       </section>
@@ -1761,6 +2578,7 @@ export default function App() {
             <Route path="/deportes" element={<SportsPage />} />
             <Route path="/directorio" element={<DirectoryPage />} />
             <Route path="/restaurante" element={<RestaurantPage />} />
+            <Route path="/eventos" element={<EventosPage />} />
           </Routes>
         </main>
         <Footer />
