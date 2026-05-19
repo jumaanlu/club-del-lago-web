@@ -87,7 +87,6 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Inicio', href: pathname === '/' ? '#inicio' : '/' },
-    { name: 'El Club', href: pathname === '/' ? '#club' : '/#club' },
     { name: 'Instalaciones', href: '/instalaciones', isPage: true },
     { name: 'Deportes', href: '/deportes', isPage: true },
     { name: 'Directorio', href: '/directorio', isPage: true },
@@ -1605,6 +1604,20 @@ const EventosPage = () => {
   const [calcSpace, setCalcSpace] = useState<string>('laguito1');
   const [calcGuests, setCalcGuests] = useState<number>(50);
   const [calcIsSocio, setCalcIsSocio] = useState<boolean>(true);
+  const [calcDate, setCalcDate] = useState<string>('');
+
+  const getFormattedDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    try {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return dateStr;
+    } catch {
+      return dateStr;
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1792,7 +1805,9 @@ const EventosPage = () => {
 
   const calculatedBasePrice = getCalculatedPrice();
   const dateReservationFee = 550;
-  const totalCost = calculatedBasePrice + dateReservationFee;
+  // Reservation fee is now deducted from/included in the total cost rather than extra
+  const totalCost = calculatedBasePrice;
+  const remainingBalance = calculatedBasePrice > 0 ? Math.max(0, calculatedBasePrice - dateReservationFee) : 0;
 
   const handleConsultSpace = (spaceName: string) => {
     const text = `Hola Daniel Gonzalez, me gustaría solicitar informes sobre disponibilidad de espacio para el área de eventos "${spaceName}" en el Club del Lago. ¡Muchas gracias!`;
@@ -1801,16 +1816,18 @@ const EventosPage = () => {
   };
 
   const handleSendQuote = () => {
+    const formattedDate = getFormattedDate(calcDate);
     const text = `Hola Daniel Gonzalez, he realizado una simulación de evento en la plataforma de Club del Lago:
 - Espacio Seleccionado: ${selectedCalcSpace.title}
+- Fecha Solicitada: ${formattedDate ? formattedDate : 'Por definir (consultar disponibilidad)'}
 - Número de Invitados: ${calcGuests} personas
 - ¿Soy Socio del Club?: ${calcIsSocio ? 'Sí' : 'No'}
-- Costo de Renta Base: ${calculatedBasePrice === 0 ? 'Sin Costo' : `$${calculatedBasePrice.toLocaleString()}`}
-- Depósito de Confirmación: $${dateReservationFee}
-- Total Estimado de Renta: $${totalCost.toLocaleString()}
+- Costo de Renta Total: ${totalCost === 0 ? 'Sin Costo de Renta' : `$${totalCost.toLocaleString()}`}
+- Anticipo de Separación (ya incluido): $${calculatedBasePrice > 0 ? dateReservationFee : 0}
+- Saldo Restante a Liquidar: ${calculatedBasePrice > 0 ? `$${remainingBalance.toLocaleString()}` : '$0'}
 - Servicio de Meseros sugerido/comentario: Contratarse en Área de Eventos (${recommendedWaiters} meseros recomendados para ${calcGuests} pers.)
 
-Me gustaría confirmar la disponibilidad de fecha. Quedo al pendiente de los pasos a seguir.`;
+Me gustaría confirmar la disponibilidad de esta fecha para poder realizar la separación. Quedo al pendiente de los pasos a seguir.`;
     const url = `https://wa.me/528123870840?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
@@ -1833,7 +1850,7 @@ Me gustaría confirmar la disponibilidad de fecha. Quedo al pendiente de los pas
               Creamos Recuerdos
             </h1>
             <p className="text-slate-200 italic text-base md:text-lg max-w-3xl leading-relaxed mx-auto font-light">
-              Descubra las áreas sociales más selectas de Monterrey. Con capacidades de 20 a 100 comensales, diseñamos de la mano con usted banquetes de gala, cumpleaños, bodas o convivios deportivos de total distinción.
+              Disfrute espacios ideales para reuniones, celebraciones y momentos especiales dentro de un ambiente exclusivo y familiar.
             </p>
           </motion.div>
         </div>
@@ -1923,7 +1940,6 @@ Me gustaría confirmar la disponibilidad de fecha. Quedo al pendiente de los pas
                     <div>
                       <span className="text-gold font-bold text-[10px] uppercase tracking-widest block italic mb-1">{space.tagline}</span>
                       <h3 className="text-navy text-lg font-bold uppercase mb-3">{space.title}</h3>
-                      <p className="text-slate-500 text-xs italic leading-relaxed mb-6">{space.desc}</p>
                       
                       {/* Attributes list */}
                       <div className="space-y-2 border-t border-slate-100 pt-4 mb-6">
@@ -2078,6 +2094,24 @@ Me gustaría confirmar la disponibilidad de fecha. Quedo al pendiente de los pas
                 <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-navy"></div>
               </label>
             </div>
+
+            {/* Event Date Selector */}
+            <div className="space-y-3 pt-2">
+              <label className="block text-navy font-bold text-[10px] uppercase tracking-widest flex items-center gap-1.5">
+                <Calendar size={13} className="text-gold" />
+                4. Selecciona la Fecha del Evento
+              </label>
+              <input
+                type="date"
+                value={calcDate}
+                onChange={(e) => setCalcDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                className="w-full bg-slate-50 border border-slate-200 p-3 text-xs text-navy font-medium tracking-wide focus:outline-hidden focus:ring-1 focus:ring-gold focus:border-gold cursor-pointer rounded-sm"
+              />
+              <p className="text-slate-400 text-[9px] italic uppercase tracking-wider">
+                Indique la fecha propuesta para verificar disponibilidad y apartar el espacio.
+              </p>
+            </div>
             
             {calcSpace === 'solosocios' && (
               <div className="bg-blue-50 text-navy border border-blue-200 px-4 py-3.5 text-[10px] italic flex items-start gap-2 rounded-sm leading-relaxed">
@@ -2099,15 +2133,34 @@ Me gustaría confirmar la disponibilidad de fecha. Quedo al pendiente de los pas
               
               <div className="space-y-4 border-b border-white/15 pb-6">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-300">Base Renta ({selectedCalcSpace.title}):</span>
-                  <span className="font-bold tracking-wider">
-                    {calculatedBasePrice === 0 ? 'Sin Renta / $0' : `$${calculatedBasePrice.toLocaleString()}`}
+                  <span className="text-slate-300">Fecha Tentativa:</span>
+                  <span className="font-bold tracking-wider text-gold">
+                    {calcDate ? getFormattedDate(calcDate) : 'Por confirmar'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-300 font-medium">Depósito de Confirmación:</span>
-                  <span className="font-bold tracking-wider">$550</span>
+                  <span className="text-slate-300">Base Renta ({selectedCalcSpace.title}):</span>
+                  <span className="font-bold tracking-wider">
+                    {calculatedBasePrice === 0 ? 'Sin Renta' : `$${calculatedBasePrice.toLocaleString()}`}
+                  </span>
                 </div>
+                {calculatedBasePrice > 0 ? (
+                  <>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate-300 font-medium">Anticipo de Separación (ya incluido):</span>
+                      <span className="font-bold tracking-wider text-green-300">-$550</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-slate-300 font-medium">Saldo Restante por Liquidar:</span>
+                      <span className="font-bold tracking-wider">${remainingBalance.toLocaleString()}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-slate-300 font-medium">Depósito de Garantía (Reembolsable):</span>
+                    <span className="font-bold tracking-wider">$550</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-start text-xs">
                   <span className="text-slate-300 font-medium flex items-center gap-1.5">
                     Meseros Recomendados:
@@ -2121,8 +2174,11 @@ Me gustaría confirmar la disponibilidad de fecha. Quedo al pendiente de los pas
 
               {/* Total Card */}
               <div className="py-6 flex justify-between items-baseline">
-                <span className="text-gold font-bold text-[10px] uppercase tracking-widest leading-none">Total Estimado:</span>
-                <span className="text-3xl font-bold text-gold font-sans tracking-tight">
+                <div>
+                  <span className="text-gold font-bold text-[10px] uppercase tracking-widest leading-none block">Total Estimado:</span>
+                  <span className="text-[9px] text-slate-300 block mt-0.5">(Renta con separación incluida)</span>
+                </div>
+                <span className="text-3xl font-bold text-gold font-sans tracking-tight text-right">
                   ${totalCost.toLocaleString()}
                   <span className="text-[10px] text-white italic font-normal block text-right mt-1 tracking-normal">pesos m.n.</span>
                 </span>
