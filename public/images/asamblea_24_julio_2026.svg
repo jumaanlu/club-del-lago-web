@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1560" width="100%" height="100%" style="background-color: #ffffff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+  <!-- Top Right Diagonal Header Banner -->
+  <polygon points="380,0 1000,0 1000,60 420,60" fill="#001838" />
+  <text x="960" y="38" fill="#ffffff" font-size="22" font-weight="bold" text-anchor="end" letter-spacing="0.5">A 24 de Julio del 2026</text>
+
+  <!-- Logo Top Right -->
+  <g transform="translate(770, 90)">
+    <!-- Yellow circle -->
+    <circle cx="50" cy="45" r="38" fill="#eab308" />
+    <!-- Blue wavy lines on right side of logo -->
+    <path d="M 50 10 C 75 10, 95 25, 95 45 C 95 65, 75 80, 50 80 C 65 70, 75 58, 75 45 C 75 32, 65 20, 50 10 Z" fill="#001838" />
+    <path d="M 55 18 C 75 22, 88 32, 88 45 C 88 58, 75 68, 55 72 C 68 64, 74 54, 74 45 C 74 36, 68 26, 55 18 Z" fill="#ffffff" />
+    <path d="M 60 25 C 75 28, 82 36, 82 45 C 82 54, 75 62, 60 65 C 70 58, 73 52, 73 45 C 73 38, 70 32, 60 25 Z" fill="#001838" />
+    <!-- delago text -->
+    <text x="50" y="112" fill="#1d2a6a" font-size="34" font-weight="900" font-family="'Arial Black', sans-serif" text-anchor="middle" letter-spacing="-1">delago</text>
+  </g>
+
+  <!-- Header Titles -->
+  <text x="500" y="140" fill="#000000" font-size="34" font-weight="900" text-anchor="middle" letter-spacing="0.5">CLUB DEL LAGO A.C.</text>
+  <text x="500" y="190" fill="#000000" font-size="22" font-weight="bold" text-anchor="middle">ASAMBLEA GENERAL ORDINARIA</text>
+  <text x="500" y="222" fill="#000000" font-size="21" font-weight="bold" text-anchor="middle">Primera y Segunda Convocatoria</text>
+
+  <!-- Opening Paragraph -->
+  <g font-size="18.5" fill="#000000" font-family="sans-serif">
+    <text x="50" y="295">En cumplimiento a lo dispuesto en nuestros Estatutos, se convoca a los Asociados</text>
+    <text x="50" y="325"><tspan font-weight="bold">Titulares y/o Cónyuges</tspan>, del Club del Lago, A.C., para que participen en la <tspan font-weight="bold">Asamblea</tspan></text>
+    <text x="50" y="355"><tspan font-weight="bold">General Ordinaria</tspan> que se verificará en nuestro domicilio social, sito en Privada del</text>
+    <text x="50" y="385">Lago # 200, Col. Del Paseo Residencial, de esta Ciudad; el día <tspan font-weight="bold">Lunes 03 de agosto del</tspan></text>
+    <text x="50" y="415"><tspan font-weight="bold">2026</tspan>, siendo la <tspan font-weight="bold">Primera Convocatoria</tspan> a las <tspan font-weight="bold">19:30 horas</tspan> y la <tspan font-weight="bold">Segunda Convocatoria</tspan> a</text>
+    <text x="50" y="445">las <tspan font-weight="bold">20:00 horas</tspan>; bajo el siguiente:</text>
+  </g>
+
+  <!-- Title: ORDEN DEL DIA -->
+  <text x="500" y="515" fill="#000000" font-size="21" font-weight="bold" text-anchor="middle" text-decoration="underline">ORDEN DEL DÍA</text>
+
+  <!-- Orden del dia items -->
+  <g font-size="17.5" fill="#000000">
+    <text x="50" y="560">I.Registro de Participantes.</text>
+    <text x="50" y="595">II.Nombramiento de Escrutadores, Quórum de la Asamblea y Cantidad de Votos.</text>
+    <text x="50" y="630">III.Aprobación de la Admisión y/o Exclusión de Asociados.</text>
+    <text x="50" y="665">IV.Informe de Actividades Trimestral (Abril – Junio 2026)</text>
+    <text x="50" y="700">V.Informe Financiero Trimestral (Abril – Junio 2026)</text>
+    <text x="50" y="735">VI.Dictamen del Consejo de Vigilancia.</text>
+    <text x="50" y="770">VII.Discusión y Aprobación, y en su caso Modificación o Rechazo, del Informe o</text>
+    <text x="80" y="798">Informes presentados.</text>
+    <text x="50" y="833">VIII.Nombramiento de la Comisión Electoral.</text>
+    <text x="50" y="868">IX.Votación de Propuesta de proyecto de actualización de Estatutos por parte de</text>
+    <text x="80" y="896">especialistas externos en Clubes Deportivos.</text>
+    <text x="50" y="931">X.Propuesta y aprobación de los asuntos que la Asamblea solicite sean incluidos para</text>
+    <text x="80" y="959">tratarse como parte del Orden del Día, de la siguiente Asamblea General Ordinaria.</text>
+  </g>
+
+  <!-- Paragraphs Below -->
+  <g font-size="18" fill="#000000">
+    <!-- P1 -->
+    <text x="50" y="1020">Para que un Asociado Titular o su Cónyuge tenga derecho a asistir a la Asamblea,</text>
+    <text x="50" y="1050">deberá tener la calidad de Asociado Activo; es decir, que no se encuentre suspendido</text>
+    <text x="50" y="1080">en sus derechos de Asociado por alguna de las causas establecidas en los Estatutos</text>
+    <text x="50" y="1110">XLV y CXLIII.</text>
+
+    <!-- P2 -->
+    <text x="50" y="1160">Una vez instalada la Asamblea en la Segunda Convocatoria los Asociados Activos o</text>
+    <text x="50" y="1190">sus Cónyuges que lleguen tarde, tendrán voz, pero no tendrán derecho a voto. <tspan font-weight="bold" text-decoration="underline">Se les</tspan></text>
+    <text x="50" y="1220"><tspan font-weight="bold" text-decoration="underline">recuerda que no estará permitida la entrada de niños.</tspan></text>
+
+    <!-- P3 -->
+    <text x="50" y="1270">Si a la hora indicada no se encontrara presente el quórum de asistencia que en la</text>
+    <text x="50" y="1300">Primera Convocatoria señalan los Estatutos para considerar legalmente instalada la</text>
+    <text x="50" y="1330">Asamblea, ésta se llevará a cabo en la Segunda Convocatoria media hora después y</text>
+    <text x="50" y="1360">con el número de Asociados presentes. La duración máxima de la Asamblea será de 2</text>
+    <text x="50" y="1390">horas. De no tratarse todos los puntos del orden del día se continuará el día que</text>
+    <text x="50" y="1420">acuerden los Asambleístas dentro de los siguientes 7 días naturales.</text>
+  </g>
+
+  <!-- Signoff -->
+  <text x="500" y="1480" fill="#000000" font-size="20" font-weight="bold" text-anchor="middle">ATENTAMENTE</text>
+  <text x="500" y="1510" fill="#000000" font-size="21" font-weight="bold" text-anchor="middle">Consejo de Directores 2026</text>
+
+  <!-- Bottom Accent Bars -->
+  <polygon points="490,1535 525,1560 0,1560 0,1535" fill="#001838" />
+  <polygon points="515,1535 1000,1535 1000,1560 500,1560" fill="#facc15" />
+</svg>

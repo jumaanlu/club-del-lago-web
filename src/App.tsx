@@ -4,7 +4,8 @@ import {
   Instagram, Facebook, Clock, Trophy, Users, 
   Dumbbell, Utensils, Calendar, Smartphone,
   ExternalLink, ArrowRight, Loader2, CheckCircle2, Plus,
-  Camera, Maximize2, Check, Sparkles, Calculator, AlertCircle, Percent
+  Camera, Maximize2, Check, Sparkles, Calculator, AlertCircle, Percent,
+  Search, Eye, Download, Share2, FileText, Bell
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
@@ -87,6 +88,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Inicio', href: pathname === '/' ? '#inicio' : '/' },
+    { name: 'Comunicados', href: '/comunicados', isPage: true },
     { name: 'Instalaciones', href: '/instalaciones', isPage: true },
     { name: 'Deportes', href: '/deportes', isPage: true },
     { name: 'Directorio', href: '/directorio', isPage: true },
@@ -2297,6 +2299,112 @@ const HomePage = () => {
   );
 };
 
+const ComunicadosPage = () => {
+  const [selectedNoticeImage, setSelectedNoticeImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const noticeImage = '/images/Convocatoria-3-ag.jpeg';
+
+  return (
+    <div className="pt-20 bg-slate-50 min-h-screen font-sans">
+      {/* Header */}
+      <section className="relative py-14 bg-navy text-white overflow-hidden border-b-4 border-gold">
+        <div className="max-w-7xl mx-auto px-6 relative z-20 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <span className="text-gold font-bold tracking-[0.4em] uppercase text-xs mb-2 block italic">Club del Lago A.C.</span>
+            <h1 className="text-3xl md:text-5xl font-display font-black tracking-tighter uppercase text-white mb-2">
+              Comunicados
+            </h1>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Image Container */}
+      <div className="max-w-4xl mx-auto px-4 py-12 flex flex-col items-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="bg-white p-3 md:p-6 rounded-sm shadow-xl border border-slate-200 cursor-pointer group hover:border-gold transition-all w-full max-w-3xl"
+          onClick={() => setSelectedNoticeImage(noticeImage)}
+        >
+          <div className="relative overflow-hidden">
+            <img 
+              src={noticeImage} 
+              alt="Comunicado Oficial - Club del Lago A.C." 
+              className="w-full h-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-[1.01]"
+            />
+            <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white p-4">
+              <Maximize2 size={36} className="text-gold mb-2" />
+              <span className="text-xs font-bold uppercase tracking-widest bg-navy/80 px-4 py-2 rounded-sm border border-gold">
+                Haga clic para ampliar
+              </span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Action Buttons */}
+        <div className="mt-6 flex flex-wrap gap-4 justify-center">
+          <button
+            onClick={() => setSelectedNoticeImage(noticeImage)}
+            className="inline-flex items-center gap-2 bg-navy hover:bg-gold hover:text-navy text-white font-bold px-6 py-3 text-xs uppercase tracking-widest transition-colors rounded-sm shadow-md"
+          >
+            <Eye size={16} /> Ver Imagen Completa
+          </button>
+          <a
+            href={noticeImage}
+            download="Comunicado_Club_del_Lago.jpeg"
+            className="inline-flex items-center gap-2 bg-slate-200 hover:bg-slate-300 text-navy font-bold px-6 py-3 text-xs uppercase tracking-widest transition-colors rounded-sm"
+          >
+            <Download size={16} /> Descargar Imagen
+          </a>
+        </div>
+      </div>
+
+      {/* Fullscreen Zoom Modal */}
+      <AnimatePresence>
+        {selectedNoticeImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-navy/95 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+            onClick={() => setSelectedNoticeImage(null)}
+          >
+            <button 
+              className="absolute top-6 right-6 text-white hover:text-gold transition-colors bg-white/10 p-3 rounded-full cursor-pointer z-10"
+              onClick={() => setSelectedNoticeImage(null)}
+            >
+              <X size={28} />
+            </button>
+
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="max-w-4xl max-h-[92vh] bg-white p-2 md:p-4 rounded-sm shadow-2xl overflow-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img 
+                src={selectedNoticeImage} 
+                alt="Comunicado Oficial" 
+                className="w-full h-auto max-h-[82vh] object-contain mx-auto"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const DirectoryPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -2630,6 +2738,7 @@ export default function App() {
         <main className="grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/comunicados" element={<ComunicadosPage />} />
             <Route path="/instalaciones" element={<InstallationsPage />} />
             <Route path="/deportes" element={<SportsPage />} />
             <Route path="/directorio" element={<DirectoryPage />} />
