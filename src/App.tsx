@@ -1354,6 +1354,8 @@ const RestaurantPage = () => {
     {
       id: 'las-palmas',
       title: 'Restaurante Las Palmas',
+      eyebrow: 'Cocina familiar',
+      schedule: 'Desayunos y comidas',
       description: 'Un espacio ideal para disfrutar momentos en familia y compartir la tradición gastronómica del Club.',
       image: '/images/Palmas.webp',
       menus: [
@@ -1364,6 +1366,8 @@ const RestaurantPage = () => {
     {
       id: 'snack-brasas',
       title: 'Snack Brasas',
+      eyebrow: 'Casual y deportivo',
+      schedule: 'Servicio durante el día',
       description: 'Un ambiente relajado pensado para convivir, disfrutar y hacer una pausa durante el día.',
       image: '/images/brasas.webp',
       menus: [
@@ -1374,6 +1378,8 @@ const RestaurantPage = () => {
     {
       id: 'bar-terraza',
       title: 'Bar Terraza',
+      eyebrow: 'Atardeceres y convivencia',
+      schedule: 'Comidas y cenas',
       description: 'El lugar perfecto para reunirse, relajarse y disfrutar la vida social del Club.',
       image: '/images/bar.webp',
       menus: [
@@ -1385,17 +1391,20 @@ const RestaurantPage = () => {
   if (showDetailedMenu) {
     return (
       <div className="pt-20 bg-white min-h-screen">
-        <div className="bg-navy py-8 px-6 border-b border-gold">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <div className="bg-navy py-8 px-6 border-b-4 border-gold">
+          <div className="max-w-7xl mx-auto grid grid-cols-[auto_1fr_auto] items-center gap-6">
             <button 
               onClick={() => setShowDetailedMenu(false)}
               className="text-white font-bold uppercase text-[10px] tracking-widest flex items-center gap-2 hover:text-gold transition-colors"
             >
               <ArrowRight size={16} className="rotate-180" /> Volver a Áreas
             </button>
-            <h2 className="text-white font-serif italic text-xl uppercase tracking-tighter">
+            <div className="text-center">
+              <span className="text-gold text-[9px] font-bold uppercase tracking-[0.3em] block mb-1">Carta digital</span>
+              <h2 className="text-white font-serif italic text-xl md:text-2xl tracking-tight">
               {menuType === 'desayunos' ? 'Menú Desayunos' : menuType === 'terraza' ? 'Menú Bar Terraza' : 'Menú Comidas'}
-            </h2>
+              </h2>
+            </div>
             <div className="w-10" /> 
           </div>
         </div>
@@ -1419,8 +1428,8 @@ const RestaurantPage = () => {
           </div>
         </div>
 
-        <section className="py-12 bg-slate-50">
-          <div className="max-w-4xl mx-auto px-6">
+        <section className="py-12 md:py-16 bg-[#f7f5f0] min-h-[70vh]">
+          <div className="max-w-6xl mx-auto px-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${menuType}-${activeCategory}`}
@@ -1429,21 +1438,25 @@ const RestaurantPage = () => {
                 exit={{ opacity: 0, y: -10 }}
                 className="grid gap-8"
               >
-                <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+                <div className="mb-2">
+                  <span className="text-gold font-bold text-[9px] uppercase tracking-[0.35em]">Selección del chef</span>
+                  <h3 className="text-3xl md:text-4xl text-navy font-serif italic mt-2">{activeCategory}</h3>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
                   {currentMenu.find(c => c.category === activeCategory)?.items.map((item, idx) => (
-                    <div key={idx} className="group border-b border-slate-200 pb-4">
-                      <div className="flex justify-between items-end mb-1">
-                        <h3 className="text-navy font-bold text-[11px] uppercase tracking-wider group-hover:text-gold transition-colors">
+                    <article key={idx} className="group bg-white border border-slate-200 p-5 md:p-6 transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-lg">
+                      <div className="flex justify-between items-start gap-4 mb-3">
+                        <h4 className="text-navy font-bold text-[12px] uppercase tracking-wider group-hover:text-gold transition-colors">
                           {item.name}
-                        </h3>
-                        <span className="text-navy font-serif italic">{item.price}</span>
+                        </h4>
+                        <span className="shrink-0 bg-navy px-3 py-1.5 text-sm font-serif italic text-white">{item.price}</span>
                       </div>
                       {item.desc && (
-                        <p className="text-slate-500 text-[10px] italic leading-relaxed">
+                        <p className="text-slate-500 text-[11px] italic leading-relaxed">
                           {item.desc}
                         </p>
                       )}
-                    </div>
+                    </article>
                   ))}
                 </div>
               </motion.div>
@@ -1473,32 +1486,42 @@ const RestaurantPage = () => {
         </div>
       </section>
 
-      {/* Areas List */}
-      <section className="py-24 bg-white">
+      {/* Areas & menus */}
+      <section className="py-20 md:py-28 bg-[#f7f5f0]">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="space-y-32">
+          <div className="max-w-2xl mb-12 md:mb-16">
+            <span className="text-gold font-bold uppercase text-[10px] tracking-[0.3em] block mb-4">Elija su experiencia</span>
+            <h2 className="text-4xl md:text-5xl text-navy font-serif italic mb-5">Tres espacios, una misma tradición</h2>
+            <p className="text-slate-600 leading-relaxed">Seleccione un área y consulte su carta digital sin perderse entre secciones.</p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-6">
             {areas.map((area, idx) => (
-              <motion.div 
+              <motion.article
                 key={area.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className={`flex flex-col ${idx % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-20 items-center`}
+                transition={{ delay: idx * 0.08 }}
+                className="group bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-full hover:-translate-y-1 hover:shadow-xl transition-all duration-500"
               >
-                <div className="lg:w-1/2 w-full">
-                  <div className="aspect-[16/10] overflow-hidden border border-slate-100 p-2 bg-white shadow-sm relative group">
-                    <OptimizedImage src={area.image} alt={area.title} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" />
+                <div className="aspect-[4/3] overflow-hidden relative">
+                  <OptimizedImage src={area.image} alt={area.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/5 to-transparent" />
+                  <div className="absolute left-6 right-6 bottom-6 text-white">
+                    <span className="text-gold font-bold uppercase text-[9px] tracking-[0.25em]">{area.eyebrow}</span>
+                    <h3 className="text-3xl font-serif italic mt-2">{area.title}</h3>
                   </div>
                 </div>
 
-                <div className="lg:w-1/2 w-full space-y-8">
-                  <div>
-                    <span className="text-gold font-bold uppercase text-[10px] tracking-[0.2em] mb-4 block italic">Área {idx + 1}</span>
-                    <h2 className="text-3xl md:text-5xl text-navy font-serif italic mb-6 leading-tight">{area.title}</h2>
-                    <p className="text-slate-600 italic leading-relaxed text-lg">{area.description}</p>
+                <div className="p-6 md:p-8 flex flex-col grow">
+                  <div className="flex items-center gap-3 text-slate-400 mb-5">
+                    <Clock size={15} />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.18em]">{area.schedule}</span>
                   </div>
+                  <p className="text-slate-600 italic leading-relaxed text-sm mb-7">{area.description}</p>
 
-                  <div className="flex flex-wrap gap-4 pt-4">
+                  <div className="grid gap-3 mt-auto">
                     {area.menus.map((menu, mIdx) => (
                       <button 
                         key={mIdx}
@@ -1509,20 +1532,18 @@ const RestaurantPage = () => {
                             window.open(menu.file, '_blank');
                           }
                         }}
-                        className="flex items-center gap-3 bg-navy text-white px-6 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-gold transition-colors border-l-4 border-gold shadow-sm"
+                        className="flex items-center justify-between gap-3 bg-navy text-white px-5 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:text-navy transition-colors border-l-4 border-gold"
                       >
-                        <Utensils size={14} className="text-gold" />
-                        {menu.label}
+                        <span className="flex items-center gap-3">
+                          <Utensils size={14} className="text-gold" />
+                          {menu.label}
+                        </span>
+                        <ArrowRight size={14} />
                       </button>
                     ))}
                   </div>
-                  
-                  <div className="flex items-center gap-4 text-slate-400">
-                    <Clock size={16} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Consulte horarios de servicio en recepción</span>
-                  </div>
                 </div>
-              </motion.div>
+              </motion.article>
             ))}
           </div>
         </div>
@@ -2260,6 +2281,7 @@ const InstallationsPage = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentPool, setCurrentPool] = useState(0);
   const [currentGym, setCurrentGym] = useState(0);
+  const [activeFacility, setActiveFacility] = useState<'pools' | 'gym'>('pools');
 
   const poolPhotos = [
     { id: 1, title: 'Alberca Olímpica Lagartos', image: '/images/gallery/ALBERCA INTERIROR.webp', desc: 'Nuestra icónica alberca techada, el alma deportiva del club.' },
@@ -2304,154 +2326,129 @@ const InstallationsPage = () => {
     };
   }, [poolPhotos.length, gymPhotos.length]);
 
+  const facilityAreas = [
+    {
+      id: 'pools' as const,
+      eyebrow: 'Deporte y convivencia',
+      title: 'Albercas',
+      description: 'Espacios para entrenamiento, competencia y descanso familiar.',
+      cover: poolPhotos[0].image,
+      photos: poolPhotos,
+      currentIndex: currentPool,
+      setCurrentIndex: setCurrentPool,
+    },
+    {
+      id: 'gym' as const,
+      eyebrow: 'Equipamiento Cybex',
+      title: 'Gimnasio',
+      description: 'Tecnología, fuerza y bienestar con vistas panorámicas.',
+      cover: gymPhotos[0].image,
+      photos: gymPhotos,
+      currentIndex: currentGym,
+      setCurrentIndex: setCurrentGym,
+    },
+  ];
+
+  const activeArea = facilityAreas.find((area) => area.id === activeFacility) ?? facilityAreas[0];
+  const activePhoto = activeArea.photos[activeArea.currentIndex];
+
   return (
-    <div className="pt-20 bg-[#fdfdfd] min-h-screen pb-32">
-      {/* Editorial Header - Pools */}
-      <section className="max-w-7xl mx-auto px-6 pt-24 pb-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="text-gold font-bold text-[9px] uppercase tracking-[0.5em] mb-6 block">Estilo de Vida • Club del Lago</span>
-          <h1 className="text-5xl md:text-7xl font-serif italic text-navy mb-8 leading-tight">
-            Nuestras Albercas
-          </h1>
-          <div className="w-16 h-px bg-gold/40 mx-auto mb-8" />
-          <p className="text-slate-500 italic text-xl max-w-2xl mx-auto leading-relaxed px-8">
-            Espacios diseñados para la excelencia deportiva y el descanso familiar incomparable.
-          </p>
-        </motion.div>
+    <div className="pt-20 bg-[#f7f5f0] min-h-screen pb-32">
+      <section className="bg-navy text-white border-b-4 border-gold">
+        <div className="max-w-7xl mx-auto px-6 py-20 md:py-28 grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-end">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <span className="text-gold font-bold text-[10px] uppercase tracking-[0.4em] mb-6 block">Conozca el Club</span>
+            <h1 className="text-5xl md:text-7xl font-serif italic mb-7 leading-[0.95]">Instalaciones para cada momento</h1>
+            <p className="text-slate-300 text-lg md:text-xl max-w-2xl leading-relaxed">
+              Explore cada área en una galería diseñada para crecer junto con el Club.
+            </p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="border border-white/15 p-5">
+              <span className="text-3xl font-serif italic text-gold">{facilityAreas.length}</span>
+              <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-400 mt-2">Áreas disponibles</span>
+            </div>
+            <div className="border border-white/15 p-5">
+              <span className="text-3xl font-serif italic text-gold">{poolPhotos.length + gymPhotos.length}</span>
+              <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-400 mt-2">Fotografías</span>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Cinematic Gallery - Pools */}
-      <section className="max-w-7xl mx-auto px-6 mb-40">
-        <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-sm bg-slate-100 shadow-2xl group">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPool}
-              initial={{ opacity: 0, scale: 1.02 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-0 cursor-pointer"
-              onClick={() => setSelectedImage(poolPhotos[currentPool].image)}
+      <section className="max-w-7xl mx-auto px-6 py-12 md:py-16">
+        <div className="grid md:grid-cols-2 gap-4">
+          {facilityAreas.map((area) => (
+            <button
+              key={area.id}
+              onClick={() => setActiveFacility(area.id)}
+              aria-pressed={activeFacility === area.id}
+              className={`relative min-h-48 md:min-h-56 overflow-hidden text-left group border-2 transition-all ${
+                activeFacility === area.id ? 'border-gold shadow-xl' : 'border-transparent opacity-75 hover:opacity-100'
+              }`}
             >
-              <OptimizedImage 
-                src={poolPhotos[currentPool].image} 
-                alt={poolPhotos[currentPool].title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              
-              <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="max-w-xl">
-                  <motion.h2 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-white font-serif italic text-2xl md:text-3xl mb-1"
-                  >
-                    {poolPhotos[currentPool].title}
-                  </motion.h2>
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-white/60 italic text-sm md:text-base font-light"
-                  >
-                    {poolPhotos[currentPool].desc}
-                  </motion.p>
+              <OptimizedImage src={area.cover} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/35 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                <span className="text-gold text-[9px] font-bold uppercase tracking-[0.25em]">{area.eyebrow}</span>
+                <div className="flex items-end justify-between gap-4 mt-2">
+                  <h2 className="text-3xl md:text-4xl font-serif italic">{area.title}</h2>
+                  <span className="text-[9px] font-bold uppercase tracking-widest">{area.photos.length} fotos</span>
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Thumbnails Navigation */}
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-4 no-scrollbar">
-          {poolPhotos.map((item, idx) => (
-            <button
-              key={`thumb-pool-${item.id}`}
-              onClick={() => setCurrentPool(idx)}
-              className={`relative flex-shrink-0 w-24 md:w-32 aspect-video rounded-sm overflow-hidden transition-all duration-500 ${idx === currentPool ? 'ring-2 ring-gold scale-105 z-10' : 'opacity-40 hover:opacity-100'}`}
-            >
-              <OptimizedImage src={item.image} className="w-full h-full object-cover" alt="" />
             </button>
           ))}
         </div>
       </section>
 
-      {/* Editorial Header - Gym */}
-      <section className="max-w-7xl mx-auto px-6 pb-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="text-gold font-bold text-[9px] uppercase tracking-[0.5em] mb-6 block">Equipamiento Cybex • Alto Rendimiento</span>
-          <h2 className="text-5xl md:text-7xl font-serif italic text-navy mb-8 leading-tight">
-            Nuestro Gimnasio
-          </h2>
-          <div className="w-16 h-px bg-gold/40 mx-auto mb-8" />
-          <p className="text-slate-500 italic text-xl max-w-2xl mx-auto leading-relaxed px-8">
-            Un entorno diseñado para la transformación física con la mejor tecnología y vistas panorámicas.
-          </p>
-        </motion.div>
-      </section>
+      <section className="max-w-7xl mx-auto px-6 pb-24">
+        <div className="bg-white border border-slate-200 p-4 md:p-7 shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2 pb-6">
+            <div>
+              <span className="text-gold font-bold text-[9px] uppercase tracking-[0.3em]">{activeArea.eyebrow}</span>
+              <h2 className="text-4xl md:text-5xl font-serif italic text-navy mt-2">{activeArea.title}</h2>
+            </div>
+            <p className="text-slate-500 max-w-lg text-sm leading-relaxed">{activeArea.description}</p>
+          </div>
 
-      {/* Cinematic Gallery - Gym */}
-      <section className="max-w-7xl mx-auto px-6 mb-32">
-        <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-sm bg-slate-100 shadow-2xl group border-l-4 border-gold">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentGym}
-              initial={{ opacity: 0, scale: 1.02 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-0 cursor-pointer"
-              onClick={() => setSelectedImage(gymPhotos[currentGym].image)}
-            >
-              <OptimizedImage 
-                src={gymPhotos[currentGym].image} 
-                alt={gymPhotos[currentGym].title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              
-              <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="max-w-xl">
-                  <motion.h2 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-white font-serif italic text-2xl md:text-4xl mb-1"
-                  >
-                    {gymPhotos[currentGym].title}
-                  </motion.h2>
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-white/60 italic text-sm md:text-base font-light"
-                  >
-                    {gymPhotos[currentGym].desc}
-                  </motion.p>
+          <div className="relative aspect-[4/3] md:aspect-[21/9] overflow-hidden bg-slate-100">
+            <AnimatePresence mode="wait">
+              <motion.button
+                key={`${activeArea.id}-${activeArea.currentIndex}`}
+                initial={{ opacity: 0, scale: 1.015 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.45 }}
+                onClick={() => setSelectedImage(activePhoto.image)}
+                className="absolute inset-0 w-full h-full text-left"
+              >
+                <OptimizedImage src={activePhoto.image} alt={activePhoto.title} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
+                <div className="absolute left-6 right-6 bottom-6 md:left-9 md:right-9 md:bottom-8 text-white">
+                  <span className="text-gold text-[9px] font-bold uppercase tracking-[0.25em]">
+                    {String(activeArea.currentIndex + 1).padStart(2, '0')} / {String(activeArea.photos.length).padStart(2, '0')}
+                  </span>
+                  <h3 className="text-2xl md:text-4xl font-serif italic mt-2">{activePhoto.title}</h3>
+                  <p className="text-white/70 text-sm mt-2 max-w-xl">{activePhoto.desc}</p>
                 </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+              </motion.button>
+            </AnimatePresence>
+          </div>
 
-        {/* Thumbnails Navigation */}
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-4 no-scrollbar">
-          {gymPhotos.map((item, idx) => (
-            <button
-              key={`thumb-gym-${item.id}`}
-              onClick={() => setCurrentGym(idx)}
-              className={`relative flex-shrink-0 w-24 md:w-32 aspect-video rounded-sm overflow-hidden transition-all duration-500 ${idx === currentGym ? 'ring-2 ring-gold scale-105 z-10' : 'opacity-40 hover:opacity-100'}`}
-            >
-              <OptimizedImage src={item.image} className="w-full h-full object-cover" alt="" />
-            </button>
-          ))}
+          <div className="mt-4 grid grid-flow-col auto-cols-[7rem] md:auto-cols-[9rem] gap-3 overflow-x-auto pb-3 no-scrollbar">
+            {activeArea.photos.map((photo, idx) => (
+              <button
+                key={`${activeArea.id}-${photo.id}`}
+                onClick={() => activeArea.setCurrentIndex(idx)}
+                aria-label={`Ver ${photo.title}`}
+                className={`relative aspect-[4/3] overflow-hidden border-2 transition-all ${
+                  idx === activeArea.currentIndex ? 'border-gold opacity-100' : 'border-transparent opacity-45 hover:opacity-100'
+                }`}
+              >
+                <OptimizedImage src={photo.image} alt="" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
