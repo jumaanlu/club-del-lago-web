@@ -34,7 +34,6 @@ const Navbar = () => {
     { name: 'Inicio', href: pathname === '/' ? '#inicio' : '/' },
     { name: 'Instalaciones', href: '/instalaciones', isPage: true },
     { name: 'Deportes', href: '/deportes', isPage: true },
-    { name: 'Directorio', href: '/directorio', isPage: true },
     { name: 'Restaurante', href: '/restaurante', isPage: true },
     { name: 'Eventos', href: '/eventos', isPage: true },
     { name: 'Contacto', href: pathname === '/' ? '#contacto' : '/#contacto' },
@@ -250,6 +249,96 @@ const About = () => {
             <div className="absolute -top-4 -right-4 w-32 h-32 border-4 border-gold opacity-20 -z-10" />
             <div className="absolute -bottom-4 -left-4 w-32 h-32 border-4 border-forest opacity-20 -z-10" />
           </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const LiveTheClub = () => {
+  const experiences = [
+    {
+      title: 'Deporte',
+      copy: 'Disciplina, bienestar y nuevas metas para todas las edades.',
+      image: '/images/club2.webp',
+    },
+    {
+      title: 'Familia',
+      copy: 'Espacios donde cada generación encuentra su lugar.',
+      image: '/images/club6.webp',
+    },
+    {
+      title: 'Comunidad',
+      copy: 'Tradiciones y amistades que se construyen todos los días.',
+      image: '/images/club7.webp',
+    },
+  ];
+
+  return (
+    <section id="vive-el-club" className="bg-navy py-24 md:py-32 text-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-14 lg:gap-20 items-end mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <span className="text-gold font-bold text-[10px] uppercase tracking-[0.35em] block mb-5">Vive el Club</span>
+            <h2 className="text-4xl md:text-6xl font-serif italic leading-[1.02] mb-7">
+              Aquí se viven las mejores historias
+            </h2>
+            <p className="text-slate-300 leading-relaxed mb-9 max-w-xl">
+              Club del Lago es el punto de encuentro entre deporte, familia y comunidad. Un segundo hogar para compartir, crecer y celebrar.
+            </p>
+            <a
+              href="#contacto"
+              className="inline-flex items-center gap-3 bg-gold px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-navy hover:bg-white transition-colors"
+            >
+              Conoce cómo ser parte <ArrowRight size={14} />
+            </a>
+          </motion.div>
+
+          <div className="grid grid-cols-3 border-y border-white/15">
+            <div className="py-6">
+              <span className="block text-3xl md:text-4xl font-serif italic text-gold">40+</span>
+              <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-slate-400">Años de tradición</span>
+            </div>
+            <div className="py-6 px-4 border-x border-white/15">
+              <span className="block text-3xl md:text-4xl font-serif italic text-gold">17</span>
+              <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-slate-400">Disciplinas</span>
+            </div>
+            <div className="py-6 pl-4">
+              <span className="block text-3xl md:text-4xl font-serif italic text-gold">1</span>
+              <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-slate-400">Gran comunidad</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          {experiences.map((experience, index) => (
+            <motion.article
+              key={experience.title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="group relative min-h-[25rem] overflow-hidden border border-white/10"
+            >
+              <OptimizedImage
+                src={experience.image}
+                alt={`${experience.title} en Club del Lago`}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/15 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-7">
+                <span className="text-gold text-[9px] font-bold uppercase tracking-[0.25em]">
+                  0{index + 1}
+                </span>
+                <h3 className="text-3xl font-serif italic mt-2 mb-3">{experience.title}</h3>
+                <p className="text-sm text-white/75 leading-relaxed">{experience.copy}</p>
+              </div>
+            </motion.article>
+          ))}
         </div>
       </div>
     </section>
@@ -593,68 +682,6 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  );
-};
-
-const Directory = () => {
-  const staff = [
-    { name: 'Esteban Gonzalez', position: 'Gerente General', email: 'gerenciagral@clubdelago.com.mx', note: 'Para comunicarse con Gerencia General, favor de contactar a Sandra Arévalo.' },
-    { name: 'Sandra Arévalo', position: 'Atención a Asociados', email: 'atencionaasociados@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1008' },
-    { name: 'Mayra Sánchez', position: 'Gerente Administrativo', email: 'msanchez@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1004' },
-    { name: 'Mario Saenz', position: 'Gerente de Mantenimiento', email: 'Gmantenimiento@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1010' },
-    { name: 'Vacante', position: 'Gerente de Alimentos y Bebidas', phone: '81 9689 5727' },
-    { name: 'Juan Andrade', position: 'Jefe de Sistemas y Comunicación', email: 'sistemas@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1018' },
-    { name: 'Vacante', position: 'Gerente de Capital Humano', phone: '81 9689 5727' },
-    { name: 'Daniel Gonzalez', position: 'Coordinador de Eventos', email: 'eventos@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1016' },
-    { name: 'Valeria Lopez', position: 'Comunicación', email: 'edicion@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1019' },
-    { name: 'Ramon Garza', position: 'Gerente de Deportes', email: 'deportes@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1002' },
-    { name: 'Cristina Manzanares', position: 'Asistente de Deportes', email: 'cmanzanares@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1001' },
-  ];
-
-  return (
-    <section className="py-24 bg-white mt-20">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="text-gold font-bold tracking-widest text-sm uppercase mb-3 block italic">Transparencia</span>
-          <h2 className="text-4xl md:text-5xl text-navy font-serif italic mb-4 leading-tight lowercase first-letter:uppercase">Directorio Administrativo</h2>
-          <p className="text-slate-500 italic text-sm">Nuestro equipo de profesionales está a su servicio para garantizar la mejor experiencia en el Club.</p>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {staff.map((member, idx) => (
-            <div key={idx} className="bg-white border border-slate-100 p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow group">
-              {/* Avatar Placeholder */}
-              <div className="w-16 h-16 bg-slate-50 rounded-sm flex items-center justify-center mb-4 border border-slate-100 group-hover:border-gold transition-colors">
-                <Users size={24} className="text-slate-400 group-hover:text-gold" />
-              </div>
-              
-              <h4 className="text-navy font-bold uppercase text-xs tracking-wider mb-1 italic">{member.name}</h4>
-              <p className="text-gold font-bold text-[10px] uppercase tracking-tighter mb-4 italic leading-tight">{member.position}</p>
-              
-              <div className="w-full pt-4 border-t border-slate-50 space-y-2">
-                {member.email && (
-                  <div className="flex items-center gap-2 justify-center">
-                    <Mail size={12} className="text-slate-400" />
-                    <a href={`mailto:${member.email}`} className="text-[9px] text-slate-500 hover:text-navy transition-colors truncate italic font-medium">{member.email}</a>
-                  </div>
-                )}
-                {member.phone && (
-                  <div className="flex items-center gap-2 justify-center">
-                    <Phone size={12} className="text-slate-400" />
-                    <span className="text-[9px] text-slate-500 font-bold italic tracking-tighter">{member.phone}</span>
-                  </div>
-                )}
-                {member.note && (
-                  <div className="mt-3 p-3 bg-navy/5 text-[8px] text-navy italic leading-tight border-l-2 border-gold text-left">
-                    {member.note}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 };
 
@@ -2261,20 +2288,13 @@ const HomePage = () => {
     <>
       <Hero />
       <About />
+      <LiveTheClub />
       <Sports />
       <Restaurant />
       <AppBanner />
       <Contact />
     </>
   );
-};
-
-const DirectoryPage = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-  
-  return <Directory />;
 };
 
 const InstallationsPage = () => {
@@ -2580,7 +2600,6 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/instalaciones" element={<InstallationsPage />} />
             <Route path="/deportes" element={<SportsPage />} />
-            <Route path="/directorio" element={<DirectoryPage />} />
             <Route path="/restaurante" element={<RestaurantPage />} />
             <Route path="/eventos" element={<EventosPage />} />
           </Routes>
