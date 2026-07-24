@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, type ImgHTMLAttributes } from 'react';
 import { 
   Menu, X, ChevronRight, ChevronLeft, Phone, Mail, MapPin, 
   Instagram, Facebook, Clock, Trophy, Users, 
@@ -8,55 +8,21 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { db, auth } from './firebase';
-import { collection, addDoc, serverTimestamp, doc, getDocFromServer } from 'firebase/firestore';
 
-enum OperationType {
-  CREATE = 'create',
-  UPDATE = 'update',
-  DELETE = 'delete',
-  LIST = 'list',
-  GET = 'get',
-  WRITE = 'write',
-}
+const OptimizedImage = ({ src, alt = '', ...props }: ImgHTMLAttributes<HTMLImageElement>) => {
+  const isPriorityImage = src === '/images/hero.webp';
 
-interface FirestoreErrorInfo {
-  error: string;
-  operationType: OperationType;
-  path: string | null;
-  authInfo: {
-    userId?: string | null;
-    email?: string | null;
-    emailVerified?: boolean | null;
-    isAnonymous?: boolean | null;
-    tenantId?: string | null;
-    providerInfo?: {
-      providerId?: string | null;
-      email?: string | null;
-    }[];
-  }
-}
-
-function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
-  const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
-    authInfo: {
-      userId: auth.currentUser?.uid,
-      email: auth.currentUser?.email,
-      emailVerified: auth.currentUser?.emailVerified,
-      isAnonymous: auth.currentUser?.isAnonymous,
-      tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData?.map(provider => ({
-        providerId: provider.providerId,
-        email: provider.email,
-      })) || []
-    },
-    operationType,
-    path
-  }
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
-}
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading={isPriorityImage ? 'eager' : 'lazy'}
+      decoding="async"
+      fetchPriority={isPriorityImage ? 'high' : 'auto'}
+      {...props}
+    />
+  );
+};
 
 // --- Components ---
 
@@ -64,32 +30,10 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    // Test Firestore connection
-    const testConnection = async () => {
-      try {
-        console.log("Checking Firestore connection...");
-        // Use a timeout for the test to avoid hanging
-        const docRef = doc(db, 'test', 'connection');
-        await getDocFromServer(docRef);
-        console.log("Firestore connection successful.");
-      } catch (error) {
-        console.warn("Firestore connectivity check failed (expected behavior if still provisioning):", error);
-        if (error instanceof Error) {
-          if (error.message.includes('the client is offline') || error.message.includes('Backend didn\'t respond')) {
-             console.info("Firestore status: The database might still be provisioning. This feature will be available once the backend is ready.");
-          }
-        }
-      }
-    };
-    testConnection();
-  }, []);
-
   const navLinks = [
     { name: 'Inicio', href: pathname === '/' ? '#inicio' : '/' },
     { name: 'Instalaciones', href: '/instalaciones', isPage: true },
     { name: 'Deportes', href: '/deportes', isPage: true },
-    { name: 'Directorio', href: '/directorio', isPage: true },
     { name: 'Restaurante', href: '/restaurante', isPage: true },
     { name: 'Eventos', href: '/eventos', isPage: true },
     { name: 'Contacto', href: pathname === '/' ? '#contacto' : '/#contacto' },
@@ -99,7 +43,7 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-navy text-white h-20 flex items-center justify-between px-6 md:px-12 border-b-4 border-gold shrink-0">
       <div className="flex items-center gap-3">
         <Link to="/" className="flex items-center gap-4 group">
-          <img src="/images/logo.png" alt="Club del Lago Logo" className="h-14 w-auto object-contain" />
+          <OptimizedImage src="/images/logo.png" alt="Club del Lago Logo" className="h-14 w-auto object-contain" />
           <div className="hidden sm:block">
             <h1 className="text-xl font-bold tracking-tight leading-none uppercase group-hover:text-gold transition-colors">Club del Lago</h1>
           </div>
@@ -171,9 +115,9 @@ const Navbar = () => {
                   </a>
                 )
               ))}
-              <button className="btn-outline w-full">
+              <a href="/#contacto" className="btn-outline w-full text-center">
                 Solicitar Membresía
-              </button>
+              </a>
             </div>
           </motion.div>
         )}
@@ -195,12 +139,18 @@ const Hero = () => {
             <p className="text-sm text-slate-200 max-w-md leading-relaxed mb-8 drop-shadow-[0_1px_5px_rgba(0,0,0,0.5)]">
               Disfrute de las mejores instalaciones deportivas y sociales de Monterrey. Un espacio diseñado para el bienestar y la integración de toda su familia.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-3">
+              <Link to="/instalaciones" className="inline-flex items-center gap-2 bg-gold px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-navy transition-colors hover:bg-white">
+                Explorar instalaciones <ArrowRight size={14} />
+              </Link>
+              <a href="#contacto" className="inline-flex items-center border border-white/50 px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-navy">
+                Solicitar información
+              </a>
             </div>
           </div>
           
-          <img 
-            src="/images/hero.jpg" 
+          <OptimizedImage 
+            src="/images/hero.webp" 
             alt="Club Layout" 
             className="w-full h-full object-cover"
           />
@@ -222,22 +172,20 @@ const Hero = () => {
           <div className="bg-white border border-slate-200 p-8">
             <div className="flex justify-between items-end mb-6">
               <h3 className="text-navy font-bold uppercase text-xs tracking-widest">Próximos Eventos</h3>
-              <span className="text-[10px] text-forest font-bold underline cursor-pointer">Ver todos</span>
+              <Link to="/eventos" className="text-[10px] text-forest font-bold underline">Ver todos</Link>
             </div>
             <div className="space-y-5">
               <div className="flex gap-4 border-b border-slate-100 pb-4">
                 <div className="text-center shrink-0">
-                  <span className="block text-lg font-bold text-navy leading-none">19</span>
-                  <span className="text-[9px] uppercase text-slate-400">Junio</span>
+                  <Calendar size={20} className="text-gold" aria-hidden="true" />
                 </div>
-                <p className="text-xs font-medium text-slate-600">Celebración del Día del Padre en el área de la Alberca Olímpica.</p>
+                <p className="text-xs font-medium text-slate-600">Conoce nuestros espacios y opciones para celebrar momentos especiales.</p>
               </div>
               <div className="flex gap-4">
                 <div className="text-center shrink-0">
-                  <span className="block text-lg font-bold text-navy leading-none">30-31</span>
-                  <span className="text-[9px] uppercase text-slate-400">Mayo</span>
+                  <Trophy size={20} className="text-forest" aria-hidden="true" />
                 </div>
-                <p className="text-xs font-medium text-slate-600">Copa Lagarto - Torneo de Natación.</p>
+                <p className="text-xs font-medium text-slate-600">Consulta academias, horarios y actividades deportivas vigentes.</p>
               </div>
             </div>
           </div>
@@ -291,8 +239,8 @@ const About = () => {
             className="relative"
           >
             <div className="aspect-[4/3] overflow-hidden border border-slate-100 p-2 bg-white shadow-sm">
-              <img 
-                src="/images/club5.jpg" 
+              <OptimizedImage 
+                src="/images/club5.webp" 
                 alt="Comunidad" 
                 className="w-full h-full object-cover"
               />
@@ -301,6 +249,96 @@ const About = () => {
             <div className="absolute -top-4 -right-4 w-32 h-32 border-4 border-gold opacity-20 -z-10" />
             <div className="absolute -bottom-4 -left-4 w-32 h-32 border-4 border-forest opacity-20 -z-10" />
           </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const LiveTheClub = () => {
+  const experiences = [
+    {
+      title: 'Deporte',
+      copy: 'Disciplina, bienestar y nuevas metas para todas las edades.',
+      image: '/images/club2.webp',
+    },
+    {
+      title: 'Familia',
+      copy: 'Espacios donde cada generación encuentra su lugar.',
+      image: '/images/club6.webp',
+    },
+    {
+      title: 'Comunidad',
+      copy: 'Tradiciones y amistades que se construyen todos los días.',
+      image: '/images/club7.webp',
+    },
+  ];
+
+  return (
+    <section id="vive-el-club" className="bg-navy py-24 md:py-32 text-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-14 lg:gap-20 items-end mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <span className="text-gold font-bold text-[10px] uppercase tracking-[0.35em] block mb-5">Vive el Club</span>
+            <h2 className="text-4xl md:text-6xl font-serif italic leading-[1.02] mb-7">
+              Aquí se viven las mejores historias
+            </h2>
+            <p className="text-slate-300 leading-relaxed mb-9 max-w-xl">
+              Club del Lago es el punto de encuentro entre deporte, familia y comunidad. Un segundo hogar para compartir, crecer y celebrar.
+            </p>
+            <a
+              href="#contacto"
+              className="inline-flex items-center gap-3 bg-gold px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-navy hover:bg-white transition-colors"
+            >
+              Conoce cómo ser parte <ArrowRight size={14} />
+            </a>
+          </motion.div>
+
+          <div className="grid grid-cols-3 border-y border-white/15">
+            <div className="py-6">
+              <span className="block text-3xl md:text-4xl font-serif italic text-gold">40+</span>
+              <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-slate-400">Años de tradición</span>
+            </div>
+            <div className="py-6 px-4 border-x border-white/15">
+              <span className="block text-3xl md:text-4xl font-serif italic text-gold">17</span>
+              <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-slate-400">Disciplinas</span>
+            </div>
+            <div className="py-6 pl-4">
+              <span className="block text-3xl md:text-4xl font-serif italic text-gold">1</span>
+              <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-slate-400">Gran comunidad</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          {experiences.map((experience, index) => (
+            <motion.article
+              key={experience.title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="group relative min-h-[25rem] overflow-hidden border border-white/10"
+            >
+              <OptimizedImage
+                src={experience.image}
+                alt={`${experience.title} en Club del Lago`}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/15 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-7">
+                <span className="text-gold text-[9px] font-bold uppercase tracking-[0.25em]">
+                  0{index + 1}
+                </span>
+                <h3 className="text-3xl font-serif italic mt-2 mb-3">{experience.title}</h3>
+                <p className="text-sm text-white/75 leading-relaxed">{experience.copy}</p>
+              </div>
+            </motion.article>
+          ))}
         </div>
       </div>
     </section>
@@ -400,14 +438,14 @@ const Restaurant = () => {
           className="grid grid-cols-2 gap-4 h-full"
         >
           <div className="space-y-4">
-            <img src="/images/brasas.jpg" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Snack Brasas" />
+            <OptimizedImage src="/images/brasas.webp" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Snack Brasas" />
             <div className="bg-forest/10 p-6 flex items-center justify-center border-l-4 border-forest">
                <span className="text-forest font-bold uppercase text-[10px] tracking-widest text-center">Insumos de <br/> Primera Calidad</span>
             </div>
           </div>
           <div className="space-y-4 pt-12">
-            <img src="/images/Palmas.jpg" className="rounded-sm h-44 w-full object-cover border border-slate-100" alt="Restaurante" />
-            <img src="/images/bar.jpg" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Bar Terraza" />
+            <OptimizedImage src="/images/Palmas.webp" className="rounded-sm h-44 w-full object-cover border border-slate-100" alt="Restaurante" />
+            <OptimizedImage src="/images/bar.webp" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Bar Terraza" />
           </div>
         </motion.div>
       </div>
@@ -449,7 +487,7 @@ const AppBanner = () => {
             <div className="w-64 h-[500px] bg-slate-800 rounded-[2rem] border-8 border-navy shadow-2xl relative overflow-hidden">
                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-navy rounded-b-xl z-20" />
                <div className="w-full h-full p-6 flex flex-col items-center justify-center text-center relative z-10">
-                  <img src="/images/logo.png" alt="DelagoApp Logo" className="w-24 h-auto object-contain mb-8 filter brightness-110" />
+                  <OptimizedImage src="/images/logo.png" alt="DelagoApp Logo" className="w-24 h-auto object-contain mb-8 filter brightness-110" />
                   <h4 className="text-white font-bold uppercase tracking-widest text-lg">Club del Lago</h4>
                   <p className="text-gold text-[10px] uppercase font-bold mt-2 tracking-[0.3em]">Mobile Portal</p>
                </div>
@@ -475,10 +513,13 @@ const Contact = () => {
     e.preventDefault();
     setStatus('submitting');
     
-    const path = 'contacts';
     try {
-      // 1. Guardar en Firestore para respaldo
-      await addDoc(collection(db, path), {
+      // Firebase se descarga únicamente cuando alguien envía el formulario.
+      const [{ db }, { collection, addDoc, serverTimestamp }] = await Promise.all([
+        import('./firebase'),
+        import('firebase/firestore')
+      ]);
+      await addDoc(collection(db, 'contacts'), {
         ...formData,
         createdAt: serverTimestamp()
       });
@@ -498,9 +539,8 @@ const Contact = () => {
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setStatus('idle'), 5000);
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error sending contact form: ", error);
       setStatus('error');
-      handleFirestoreError(error, OperationType.WRITE, path);
     }
   };
 
@@ -617,7 +657,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
           <div className="flex items-center gap-4">
-             <img src="/images/logo.png" alt="Club del Lago" className="h-10 w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+             <OptimizedImage src="/images/logo.png" alt="Club del Lago" className="h-10 w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
              <span className="font-display font-bold text-navy text-sm uppercase tracking-widest">Club del Lago</span>
           </div>
           
@@ -642,68 +682,6 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  );
-};
-
-const Directory = () => {
-  const staff = [
-    { name: 'Esteban Gonzalez', position: 'Gerente General', email: 'gerenciagral@clubdelago.com.mx', note: 'Para comunicarse con Gerencia General, favor de contactar a Sandra Arévalo.' },
-    { name: 'Sandra Arévalo', position: 'Atención a Asociados', email: 'atencionaasociados@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1008' },
-    { name: 'Mayra Sánchez', position: 'Gerente Administrativo', email: 'msanchez@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1004' },
-    { name: 'Mario Saenz', position: 'Gerente de Mantenimiento', email: 'Gmantenimiento@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1010' },
-    { name: 'Vacante', position: 'Gerente de Alimentos y Bebidas', phone: '81 9689 5727' },
-    { name: 'Juan Andrade', position: 'Jefe de Sistemas y Comunicación', email: 'sistemas@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1018' },
-    { name: 'Vacante', position: 'Gerente de Capital Humano', phone: '81 9689 5727' },
-    { name: 'Daniel Gonzalez', position: 'Coordinador de Eventos', email: 'eventos@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1016' },
-    { name: 'Valeria Lopez', position: 'Comunicación', email: 'edicion@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1019' },
-    { name: 'Ramon Garza', position: 'Gerente de Deportes', email: 'deportes@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1002' },
-    { name: 'Cristina Manzanares', position: 'Asistente de Deportes', email: 'cmanzanares@clubdelago.com.mx', phone: '81 9689 5727 Ext. 1001' },
-  ];
-
-  return (
-    <section className="py-24 bg-white mt-20">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="text-gold font-bold tracking-widest text-sm uppercase mb-3 block italic">Transparencia</span>
-          <h2 className="text-4xl md:text-5xl text-navy font-serif italic mb-4 leading-tight lowercase first-letter:uppercase">Directorio Administrativo</h2>
-          <p className="text-slate-500 italic text-sm">Nuestro equipo de profesionales está a su servicio para garantizar la mejor experiencia en el Club.</p>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {staff.map((member, idx) => (
-            <div key={idx} className="bg-white border border-slate-100 p-6 flex flex-col items-center text-center hover:shadow-md transition-shadow group">
-              {/* Avatar Placeholder */}
-              <div className="w-16 h-16 bg-slate-50 rounded-sm flex items-center justify-center mb-4 border border-slate-100 group-hover:border-gold transition-colors">
-                <Users size={24} className="text-slate-400 group-hover:text-gold" />
-              </div>
-              
-              <h4 className="text-navy font-bold uppercase text-xs tracking-wider mb-1 italic">{member.name}</h4>
-              <p className="text-gold font-bold text-[10px] uppercase tracking-tighter mb-4 italic leading-tight">{member.position}</p>
-              
-              <div className="w-full pt-4 border-t border-slate-50 space-y-2">
-                {member.email && (
-                  <div className="flex items-center gap-2 justify-center">
-                    <Mail size={12} className="text-slate-400" />
-                    <a href={`mailto:${member.email}`} className="text-[9px] text-slate-500 hover:text-navy transition-colors truncate italic font-medium">{member.email}</a>
-                  </div>
-                )}
-                {member.phone && (
-                  <div className="flex items-center gap-2 justify-center">
-                    <Phone size={12} className="text-slate-400" />
-                    <span className="text-[9px] text-slate-500 font-bold italic tracking-tighter">{member.phone}</span>
-                  </div>
-                )}
-                {member.note && (
-                  <div className="mt-3 p-3 bg-navy/5 text-[8px] text-navy italic leading-tight border-l-2 border-gold text-left">
-                    {member.note}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 };
 
@@ -847,7 +825,7 @@ const SportsPage = () => {
                 >
                   <div className="w-full md:w-1/2 h-full relative">
                     <div className="w-full h-full bg-white border border-slate-100 p-2 rounded-sm shadow-xl overflow-hidden">
-                      <img 
+                      <OptimizedImage 
                         src={encodeURI(`/images/flyers/${featuredFlyers[currentFeaturedIndex]}`)} 
                         alt="Featured" 
                         className="w-full h-full object-contain"
@@ -987,7 +965,7 @@ const SportsPage = () => {
                     className="min-w-[280px] md:min-w-[320px] snap-start group cursor-pointer"
                   >
                     <div className={`aspect-[3/4] overflow-hidden border border-slate-100 bg-slate-50 relative ${flyer.includes('BASQUETBOL') ? 'p-20 md:p-24' : 'p-2'}`}>
-                      <img 
+                      <OptimizedImage 
                         src={encodeURI(`/images/flyers/${flyer}`)} 
                         alt={flyer} 
                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
@@ -1403,8 +1381,10 @@ const RestaurantPage = () => {
     {
       id: 'las-palmas',
       title: 'Restaurante Las Palmas',
+      eyebrow: 'Cocina familiar',
+      schedule: 'Desayunos y comidas',
       description: 'Un espacio ideal para disfrutar momentos en familia y compartir la tradición gastronómica del Club.',
-      image: '/images/Palmas.jpg',
+      image: '/images/Palmas.webp',
       menus: [
         { label: 'Menú de Desayunos', type: 'digital', file: null, action: () => { setMenuType('desayunos'); setActiveCategory('Fruta & Hot Cakes'); setShowDetailedMenu(true); } },
         { label: 'Menú de Comidas', type: 'digital', file: null, action: () => { setMenuType('comidas'); setActiveCategory('Principales'); setShowDetailedMenu(true); } }
@@ -1413,8 +1393,10 @@ const RestaurantPage = () => {
     {
       id: 'snack-brasas',
       title: 'Snack Brasas',
+      eyebrow: 'Casual y deportivo',
+      schedule: 'Servicio durante el día',
       description: 'Un ambiente relajado pensado para convivir, disfrutar y hacer una pausa durante el día.',
-      image: '/images/brasas.jpg',
+      image: '/images/brasas.webp',
       menus: [
         { label: 'Menú Desayunos', type: 'digital', file: null, action: () => { setMenuType('snack-desayunos'); setActiveCategory('Desayunos'); setShowDetailedMenu(true); } },
         { label: 'Menú Comidas', type: 'digital', file: null, action: () => { setMenuType('snack-comidas'); setActiveCategory('Tacos & Tostadas'); setShowDetailedMenu(true); } }
@@ -1423,8 +1405,10 @@ const RestaurantPage = () => {
     {
       id: 'bar-terraza',
       title: 'Bar Terraza',
+      eyebrow: 'Atardeceres y convivencia',
+      schedule: 'Comidas y cenas',
       description: 'El lugar perfecto para reunirse, relajarse y disfrutar la vida social del Club.',
-      image: '/images/bar.jpg',
+      image: '/images/bar.webp',
       menus: [
         { label: 'Ver Menú Digital', type: 'digital', file: null, action: () => { setMenuType('terraza'); setActiveCategory('Entradas & Botanas'); setShowDetailedMenu(true); } }
       ]
@@ -1434,17 +1418,20 @@ const RestaurantPage = () => {
   if (showDetailedMenu) {
     return (
       <div className="pt-20 bg-white min-h-screen">
-        <div className="bg-navy py-8 px-6 border-b border-gold">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <div className="bg-navy py-8 px-6 border-b-4 border-gold">
+          <div className="max-w-7xl mx-auto grid grid-cols-[auto_1fr_auto] items-center gap-6">
             <button 
               onClick={() => setShowDetailedMenu(false)}
               className="text-white font-bold uppercase text-[10px] tracking-widest flex items-center gap-2 hover:text-gold transition-colors"
             >
               <ArrowRight size={16} className="rotate-180" /> Volver a Áreas
             </button>
-            <h2 className="text-white font-serif italic text-xl uppercase tracking-tighter">
+            <div className="text-center">
+              <span className="text-gold text-[9px] font-bold uppercase tracking-[0.3em] block mb-1">Carta digital</span>
+              <h2 className="text-white font-serif italic text-xl md:text-2xl tracking-tight">
               {menuType === 'desayunos' ? 'Menú Desayunos' : menuType === 'terraza' ? 'Menú Bar Terraza' : 'Menú Comidas'}
-            </h2>
+              </h2>
+            </div>
             <div className="w-10" /> 
           </div>
         </div>
@@ -1468,8 +1455,8 @@ const RestaurantPage = () => {
           </div>
         </div>
 
-        <section className="py-12 bg-slate-50">
-          <div className="max-w-4xl mx-auto px-6">
+        <section className="py-12 md:py-16 bg-[#f7f5f0] min-h-[70vh]">
+          <div className="max-w-6xl mx-auto px-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${menuType}-${activeCategory}`}
@@ -1478,21 +1465,25 @@ const RestaurantPage = () => {
                 exit={{ opacity: 0, y: -10 }}
                 className="grid gap-8"
               >
-                <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+                <div className="mb-2">
+                  <span className="text-gold font-bold text-[9px] uppercase tracking-[0.35em]">Selección del chef</span>
+                  <h3 className="text-3xl md:text-4xl text-navy font-serif italic mt-2">{activeCategory}</h3>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
                   {currentMenu.find(c => c.category === activeCategory)?.items.map((item, idx) => (
-                    <div key={idx} className="group border-b border-slate-200 pb-4">
-                      <div className="flex justify-between items-end mb-1">
-                        <h3 className="text-navy font-bold text-[11px] uppercase tracking-wider group-hover:text-gold transition-colors">
+                    <article key={idx} className="group bg-white border border-slate-200 p-5 md:p-6 transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:shadow-lg">
+                      <div className="flex justify-between items-start gap-4 mb-3">
+                        <h4 className="text-navy font-bold text-[12px] uppercase tracking-wider group-hover:text-gold transition-colors">
                           {item.name}
-                        </h3>
-                        <span className="text-navy font-serif italic">{item.price}</span>
+                        </h4>
+                        <span className="shrink-0 bg-navy px-3 py-1.5 text-sm font-serif italic text-white">{item.price}</span>
                       </div>
                       {item.desc && (
-                        <p className="text-slate-500 text-[10px] italic leading-relaxed">
+                        <p className="text-slate-500 text-[11px] italic leading-relaxed">
                           {item.desc}
                         </p>
                       )}
-                    </div>
+                    </article>
                   ))}
                 </div>
               </motion.div>
@@ -1522,32 +1513,42 @@ const RestaurantPage = () => {
         </div>
       </section>
 
-      {/* Areas List */}
-      <section className="py-24 bg-white">
+      {/* Areas & menus */}
+      <section className="py-20 md:py-28 bg-[#f7f5f0]">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="space-y-32">
+          <div className="max-w-2xl mb-12 md:mb-16">
+            <span className="text-gold font-bold uppercase text-[10px] tracking-[0.3em] block mb-4">Elija su experiencia</span>
+            <h2 className="text-4xl md:text-5xl text-navy font-serif italic mb-5">Tres espacios, una misma tradición</h2>
+            <p className="text-slate-600 leading-relaxed">Seleccione un área y consulte su carta digital sin perderse entre secciones.</p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-6">
             {areas.map((area, idx) => (
-              <motion.div 
+              <motion.article
                 key={area.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className={`flex flex-col ${idx % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-20 items-center`}
+                transition={{ delay: idx * 0.08 }}
+                className="group bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-full hover:-translate-y-1 hover:shadow-xl transition-all duration-500"
               >
-                <div className="lg:w-1/2 w-full">
-                  <div className="aspect-[16/10] overflow-hidden border border-slate-100 p-2 bg-white shadow-sm relative group">
-                    <img src={area.image} alt={area.title} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" />
+                <div className="aspect-[4/3] overflow-hidden relative">
+                  <OptimizedImage src={area.image} alt={area.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/5 to-transparent" />
+                  <div className="absolute left-6 right-6 bottom-6 text-white">
+                    <span className="text-gold font-bold uppercase text-[9px] tracking-[0.25em]">{area.eyebrow}</span>
+                    <h3 className="text-3xl font-serif italic mt-2">{area.title}</h3>
                   </div>
                 </div>
 
-                <div className="lg:w-1/2 w-full space-y-8">
-                  <div>
-                    <span className="text-gold font-bold uppercase text-[10px] tracking-[0.2em] mb-4 block italic">Área {idx + 1}</span>
-                    <h2 className="text-3xl md:text-5xl text-navy font-serif italic mb-6 leading-tight">{area.title}</h2>
-                    <p className="text-slate-600 italic leading-relaxed text-lg">{area.description}</p>
+                <div className="p-6 md:p-8 flex flex-col grow">
+                  <div className="flex items-center gap-3 text-slate-400 mb-5">
+                    <Clock size={15} />
+                    <span className="text-[9px] font-bold uppercase tracking-[0.18em]">{area.schedule}</span>
                   </div>
+                  <p className="text-slate-600 italic leading-relaxed text-sm mb-7">{area.description}</p>
 
-                  <div className="flex flex-wrap gap-4 pt-4">
+                  <div className="grid gap-3 mt-auto">
                     {area.menus.map((menu, mIdx) => (
                       <button 
                         key={mIdx}
@@ -1558,20 +1559,18 @@ const RestaurantPage = () => {
                             window.open(menu.file, '_blank');
                           }
                         }}
-                        className="flex items-center gap-3 bg-navy text-white px-6 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-gold transition-colors border-l-4 border-gold shadow-sm"
+                        className="flex items-center justify-between gap-3 bg-navy text-white px-5 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-gold hover:text-navy transition-colors border-l-4 border-gold"
                       >
-                        <Utensils size={14} className="text-gold" />
-                        {menu.label}
+                        <span className="flex items-center gap-3">
+                          <Utensils size={14} className="text-gold" />
+                          {menu.label}
+                        </span>
+                        <ArrowRight size={14} />
                       </button>
                     ))}
                   </div>
-                  
-                  <div className="flex items-center gap-4 text-slate-400">
-                    <Clock size={16} />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Consulte horarios de servicio en recepción</span>
-                  </div>
                 </div>
-              </motion.div>
+              </motion.article>
             ))}
           </div>
         </div>
@@ -1630,7 +1629,7 @@ const EventosPage = () => {
       price: 4450,
       formatPrice: '$4,450',
       tagline: 'Elegancia junto al agua',
-      image: '/images/gallery/alberca 1.png',
+      image: '/images/gallery/alberca 1.webp',
       capacity: '20 a 100 personas',
       maxCap: 100,
       minCap: 20,
@@ -1653,7 +1652,7 @@ const EventosPage = () => {
       price: 4450,
       formatPrice: '$4,450',
       tagline: 'Refinado ambiente de jardín',
-      image: '/images/gallery/alberca 2.png',
+      image: '/images/gallery/alberca 2.webp',
       capacity: '50 personas',
       maxCap: 50,
       minCap: 10,
@@ -1676,7 +1675,7 @@ const EventosPage = () => {
       price: 5000,
       formatPrice: '$5,000',
       tagline: 'Distinción y sofisticación diurna',
-      image: '/images/bar.jpg',
+      image: '/images/bar.webp',
       capacity: '90 personas',
       maxCap: 90,
       minCap: 10,
@@ -1699,7 +1698,7 @@ const EventosPage = () => {
       price: 3000,
       formatPrice: '$3,000',
       tagline: 'Diversión y calidez familiar',
-      image: '/images/gallery/alberca 3.png',
+      image: '/images/gallery/alberca 3.webp',
       capacity: '50 personas',
       maxCap: 50,
       minCap: 10,
@@ -1722,7 +1721,7 @@ const EventosPage = () => {
       price: 3400,
       formatPrice: '$3,400',
       tagline: 'Amplitud y diseño al aire libre',
-      image: '/images/gallery/alberca 4.png',
+      image: '/images/gallery/alberca 4.webp',
       capacity: '60 personas',
       maxCap: 60,
       minCap: 10,
@@ -1745,7 +1744,7 @@ const EventosPage = () => {
       price: 2800,
       formatPrice: '$2,800',
       tagline: 'La tradición de la cocina a la brasa',
-      image: '/images/brasas.jpg',
+      image: '/images/brasas.webp',
       capacity: '20 personas',
       maxCap: 20,
       minCap: 5,
@@ -1768,7 +1767,7 @@ const EventosPage = () => {
       price: 0,
       formatPrice: 'Sin Costo',
       tagline: 'Privilegio exclusivo de nuestra comunidad',
-      image: '/images/Palmas.jpg',
+      image: '/images/Palmas.webp',
       capacity: 'Socio + Máx 2 invitados con pase',
       maxCap: 3, 
       minCap: 1,
@@ -1916,7 +1915,7 @@ Me gustaría confirmar la disponibilidad de esta fecha para poder realizar la se
                 >
                   {/* Card Image */}
                   <div className="relative h-56 overflow-hidden bg-slate-100 group">
-                    <img 
+                    <OptimizedImage 
                       src={space.image} 
                       alt={space.title} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -2289,6 +2288,7 @@ const HomePage = () => {
     <>
       <Hero />
       <About />
+      <LiveTheClub />
       <Sports />
       <Restaurant />
       <AppBanner />
@@ -2297,43 +2297,36 @@ const HomePage = () => {
   );
 };
 
-const DirectoryPage = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-  
-  return <Directory />;
-};
-
 const InstallationsPage = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [currentPool, setCurrentPool] = useState(0);
   const [currentGym, setCurrentGym] = useState(0);
+  const [activeFacility, setActiveFacility] = useState<'pools' | 'gym'>('pools');
 
   const poolPhotos = [
-    { id: 1, title: 'Alberca Olímpica Lagartos', image: '/images/gallery/ALBERCA INTERIROR.png', desc: 'Nuestra icónica alberca techada, el alma deportiva del club.' },
-    { id: 2, title: 'Entrenamiento de Alto Nivel', image: '/images/gallery/ALBERCA INTERIOR 2.png', desc: 'Carriles diseñados para la competencia y el perfeccionamiento.' },
-    { id: 3, title: 'Mañanas de Distinción', image: '/images/gallery/alberca 1.png', desc: 'Vistas inigualables mientras disfrutas de un nado revitalizante.' },
-    { id: 4, title: 'Reflejos del Club', image: '/images/gallery/ALBERCA INTERIOR 3.png', desc: 'Arquitectura y deporte en perfecta armonía.' },
-    { id: 5, title: 'Atardeceres en el Agua', image: '/images/gallery/alberca 2.png', desc: 'El lugar preferido para el descanso y la convivencia familiar.' },
-    { id: 6, title: 'Tradición y Deporte', image: '/images/gallery/alberca 3.png', desc: 'Más de 40 años forjando nadadores de excelencia.' },
-    { id: 7, title: 'Espacios que Inspiran', image: '/images/gallery/alberca 4.png', desc: 'Rodeados de la belleza natural de Monterrey.' },
-    { id: 8, title: 'Vivir el Club', image: '/images/gallery/ALBERCA 5.png', desc: 'Cada rincón pensado para tu bienestar.' },
-    { id: 9, title: 'Momentos de Sol', image: '/images/gallery/ALBERCA INTERIROR 2.png', desc: 'El corazón del verano en Club del Lago.' },
+    { id: 1, title: 'Alberca Olímpica Lagartos', image: '/images/gallery/ALBERCA INTERIROR.webp', desc: 'Nuestra icónica alberca techada, el alma deportiva del club.' },
+    { id: 2, title: 'Entrenamiento de Alto Nivel', image: '/images/gallery/ALBERCA INTERIOR 2.webp', desc: 'Carriles diseñados para la competencia y el perfeccionamiento.' },
+    { id: 3, title: 'Mañanas de Distinción', image: '/images/gallery/alberca 1.webp', desc: 'Vistas inigualables mientras disfrutas de un nado revitalizante.' },
+    { id: 4, title: 'Reflejos del Club', image: '/images/gallery/ALBERCA INTERIOR 3.webp', desc: 'Arquitectura y deporte en perfecta armonía.' },
+    { id: 5, title: 'Atardeceres en el Agua', image: '/images/gallery/alberca 2.webp', desc: 'El lugar preferido para el descanso y la convivencia familiar.' },
+    { id: 6, title: 'Tradición y Deporte', image: '/images/gallery/alberca 3.webp', desc: 'Más de 40 años forjando nadadores de excelencia.' },
+    { id: 7, title: 'Espacios que Inspiran', image: '/images/gallery/alberca 4.webp', desc: 'Rodeados de la belleza natural de Monterrey.' },
+    { id: 8, title: 'Vivir el Club', image: '/images/gallery/ALBERCA 5.webp', desc: 'Cada rincón pensado para tu bienestar.' },
+    { id: 9, title: 'Momentos de Sol', image: '/images/gallery/ALBERCA INTERIROR 2.webp', desc: 'El corazón del verano en Club del Lago.' },
   ];
 
   const gymPhotos = [
-    { id: 1, title: 'Equipamiento de Vanguardia', image: '/images/gallery/gym 2.png', desc: 'Entrena con la mejor panorámica mientras te superas a ti mismo.' },
-    { id: 2, title: 'Zona de Cardio', image: '/images/gallery/gym 3.png', desc: 'Máquinas de última generación para tu salud cardiovascular.' },
-    { id: 3, title: 'Peso Libre', image: '/images/gallery/gym 4.png', desc: 'Espacios amplios y organizados para tu rutina de fuerza.' },
-    { id: 4, title: 'Entrenamiento Integral', image: '/images/gallery/gym 5.png', desc: 'Cada detalle pensado para una experiencia fitness completa.' },
-    { id: 5, title: 'Superación Diaria', image: '/images/gallery/gym 6.png', desc: 'El ambiente perfecto para mantener tu motivación al máximo.' },
-    { id: 6, title: 'Tecnología Deportiva', image: '/images/gallery/gym 7.png', desc: 'Equipos Cybex diseñados para un movimiento natural y seguro.' },
-    { id: 7, title: 'Rendimiento Extremo', image: '/images/gallery/gym 8.png', desc: 'Lleva tu capacidad física al siguiente nivel con nuestras instalaciones.' },
-    { id: 8, title: 'Paz y Esfuerzo', image: '/images/gallery/gym 9.png', desc: 'Un espacio donde el bienestar mental y físico se encuentran.' },
-    { id: 9, title: 'Comunidad Fitness', image: '/images/gallery/gym 10.png', desc: 'Únete a los mejores entrenamientos en un entorno exclusivo.' },
-    { id: 10, title: 'Equipamiento Premium', image: '/images/gallery/gym 11.png', desc: 'Variedad de máquinas para trabajar cada grupo muscular.' },
-    { id: 11, title: 'Fuerza sin Límites', image: '/images/gallery/gym 12.png', desc: 'Instalaciones diseñadas para el alto rendimiento.' },
+    { id: 1, title: 'Equipamiento de Vanguardia', image: '/images/gallery/gym 2.webp', desc: 'Entrena con la mejor panorámica mientras te superas a ti mismo.' },
+    { id: 2, title: 'Zona de Cardio', image: '/images/gallery/gym 3.webp', desc: 'Máquinas de última generación para tu salud cardiovascular.' },
+    { id: 3, title: 'Peso Libre', image: '/images/gallery/gym 4.webp', desc: 'Espacios amplios y organizados para tu rutina de fuerza.' },
+    { id: 4, title: 'Entrenamiento Integral', image: '/images/gallery/gym 5.webp', desc: 'Cada detalle pensado para una experiencia fitness completa.' },
+    { id: 5, title: 'Superación Diaria', image: '/images/gallery/gym 6.webp', desc: 'El ambiente perfecto para mantener tu motivación al máximo.' },
+    { id: 6, title: 'Tecnología Deportiva', image: '/images/gallery/gym 7.webp', desc: 'Equipos Cybex diseñados para un movimiento natural y seguro.' },
+    { id: 7, title: 'Rendimiento Extremo', image: '/images/gallery/gym 8.webp', desc: 'Lleva tu capacidad física al siguiente nivel con nuestras instalaciones.' },
+    { id: 8, title: 'Paz y Esfuerzo', image: '/images/gallery/gym 9.webp', desc: 'Un espacio donde el bienestar mental y físico se encuentran.' },
+    { id: 9, title: 'Comunidad Fitness', image: '/images/gallery/gym 10.webp', desc: 'Únete a los mejores entrenamientos en un entorno exclusivo.' },
+    { id: 10, title: 'Equipamiento Premium', image: '/images/gallery/gym 11.webp', desc: 'Variedad de máquinas para trabajar cada grupo muscular.' },
+    { id: 11, title: 'Fuerza sin Límites', image: '/images/gallery/gym 12.webp', desc: 'Instalaciones diseñadas para el alto rendimiento.' },
   ];
 
   useEffect(() => {
@@ -2353,154 +2346,129 @@ const InstallationsPage = () => {
     };
   }, [poolPhotos.length, gymPhotos.length]);
 
+  const facilityAreas = [
+    {
+      id: 'pools' as const,
+      eyebrow: 'Deporte y convivencia',
+      title: 'Albercas',
+      description: 'Espacios para entrenamiento, competencia y descanso familiar.',
+      cover: poolPhotos[0].image,
+      photos: poolPhotos,
+      currentIndex: currentPool,
+      setCurrentIndex: setCurrentPool,
+    },
+    {
+      id: 'gym' as const,
+      eyebrow: 'Equipamiento Cybex',
+      title: 'Gimnasio',
+      description: 'Tecnología, fuerza y bienestar con vistas panorámicas.',
+      cover: gymPhotos[0].image,
+      photos: gymPhotos,
+      currentIndex: currentGym,
+      setCurrentIndex: setCurrentGym,
+    },
+  ];
+
+  const activeArea = facilityAreas.find((area) => area.id === activeFacility) ?? facilityAreas[0];
+  const activePhoto = activeArea.photos[activeArea.currentIndex];
+
   return (
-    <div className="pt-20 bg-[#fdfdfd] min-h-screen pb-32">
-      {/* Editorial Header - Pools */}
-      <section className="max-w-7xl mx-auto px-6 pt-24 pb-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="text-gold font-bold text-[9px] uppercase tracking-[0.5em] mb-6 block">Estilo de Vida • Club del Lago</span>
-          <h1 className="text-5xl md:text-7xl font-serif italic text-navy mb-8 leading-tight">
-            Nuestras Albercas
-          </h1>
-          <div className="w-16 h-px bg-gold/40 mx-auto mb-8" />
-          <p className="text-slate-500 italic text-xl max-w-2xl mx-auto leading-relaxed px-8">
-            Espacios diseñados para la excelencia deportiva y el descanso familiar incomparable.
-          </p>
-        </motion.div>
+    <div className="pt-20 bg-[#f7f5f0] min-h-screen pb-32">
+      <section className="bg-navy text-white border-b-4 border-gold">
+        <div className="max-w-7xl mx-auto px-6 py-20 md:py-28 grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-end">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <span className="text-gold font-bold text-[10px] uppercase tracking-[0.4em] mb-6 block">Conozca el Club</span>
+            <h1 className="text-5xl md:text-7xl font-serif italic mb-7 leading-[0.95]">Instalaciones para cada momento</h1>
+            <p className="text-slate-300 text-lg md:text-xl max-w-2xl leading-relaxed">
+              Explore cada área en una galería diseñada para crecer junto con el Club.
+            </p>
+          </motion.div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="border border-white/15 p-5">
+              <span className="text-3xl font-serif italic text-gold">{facilityAreas.length}</span>
+              <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-400 mt-2">Áreas disponibles</span>
+            </div>
+            <div className="border border-white/15 p-5">
+              <span className="text-3xl font-serif italic text-gold">{poolPhotos.length + gymPhotos.length}</span>
+              <span className="block text-[9px] uppercase tracking-[0.2em] text-slate-400 mt-2">Fotografías</span>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Cinematic Gallery - Pools */}
-      <section className="max-w-7xl mx-auto px-6 mb-40">
-        <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-sm bg-slate-100 shadow-2xl group">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPool}
-              initial={{ opacity: 0, scale: 1.02 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-0 cursor-pointer"
-              onClick={() => setSelectedImage(poolPhotos[currentPool].image)}
+      <section className="max-w-7xl mx-auto px-6 py-12 md:py-16">
+        <div className="grid md:grid-cols-2 gap-4">
+          {facilityAreas.map((area) => (
+            <button
+              key={area.id}
+              onClick={() => setActiveFacility(area.id)}
+              aria-pressed={activeFacility === area.id}
+              className={`relative min-h-48 md:min-h-56 overflow-hidden text-left group border-2 transition-all ${
+                activeFacility === area.id ? 'border-gold shadow-xl' : 'border-transparent opacity-75 hover:opacity-100'
+              }`}
             >
-              <img 
-                src={poolPhotos[currentPool].image} 
-                alt={poolPhotos[currentPool].title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              
-              <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="max-w-xl">
-                  <motion.h2 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-white font-serif italic text-2xl md:text-3xl mb-1"
-                  >
-                    {poolPhotos[currentPool].title}
-                  </motion.h2>
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-white/60 italic text-sm md:text-base font-light"
-                  >
-                    {poolPhotos[currentPool].desc}
-                  </motion.p>
+              <OptimizedImage src={area.cover} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/35 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                <span className="text-gold text-[9px] font-bold uppercase tracking-[0.25em]">{area.eyebrow}</span>
+                <div className="flex items-end justify-between gap-4 mt-2">
+                  <h2 className="text-3xl md:text-4xl font-serif italic">{area.title}</h2>
+                  <span className="text-[9px] font-bold uppercase tracking-widest">{area.photos.length} fotos</span>
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Thumbnails Navigation */}
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-4 no-scrollbar">
-          {poolPhotos.map((item, idx) => (
-            <button
-              key={`thumb-pool-${item.id}`}
-              onClick={() => setCurrentPool(idx)}
-              className={`relative flex-shrink-0 w-24 md:w-32 aspect-video rounded-sm overflow-hidden transition-all duration-500 ${idx === currentPool ? 'ring-2 ring-gold scale-105 z-10' : 'opacity-40 hover:opacity-100'}`}
-            >
-              <img src={item.image} className="w-full h-full object-cover" alt="" />
             </button>
           ))}
         </div>
       </section>
 
-      {/* Editorial Header - Gym */}
-      <section className="max-w-7xl mx-auto px-6 pb-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="text-gold font-bold text-[9px] uppercase tracking-[0.5em] mb-6 block">Equipamiento Cybex • Alto Rendimiento</span>
-          <h2 className="text-5xl md:text-7xl font-serif italic text-navy mb-8 leading-tight">
-            Nuestro Gimnasio
-          </h2>
-          <div className="w-16 h-px bg-gold/40 mx-auto mb-8" />
-          <p className="text-slate-500 italic text-xl max-w-2xl mx-auto leading-relaxed px-8">
-            Un entorno diseñado para la transformación física con la mejor tecnología y vistas panorámicas.
-          </p>
-        </motion.div>
-      </section>
+      <section className="max-w-7xl mx-auto px-6 pb-24">
+        <div className="bg-white border border-slate-200 p-4 md:p-7 shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2 pb-6">
+            <div>
+              <span className="text-gold font-bold text-[9px] uppercase tracking-[0.3em]">{activeArea.eyebrow}</span>
+              <h2 className="text-4xl md:text-5xl font-serif italic text-navy mt-2">{activeArea.title}</h2>
+            </div>
+            <p className="text-slate-500 max-w-lg text-sm leading-relaxed">{activeArea.description}</p>
+          </div>
 
-      {/* Cinematic Gallery - Gym */}
-      <section className="max-w-7xl mx-auto px-6 mb-32">
-        <div className="relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-sm bg-slate-100 shadow-2xl group border-l-4 border-gold">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentGym}
-              initial={{ opacity: 0, scale: 1.02 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-0 cursor-pointer"
-              onClick={() => setSelectedImage(gymPhotos[currentGym].image)}
-            >
-              <img 
-                src={gymPhotos[currentGym].image} 
-                alt={gymPhotos[currentGym].title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              
-              <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="max-w-xl">
-                  <motion.h2 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-white font-serif italic text-2xl md:text-4xl mb-1"
-                  >
-                    {gymPhotos[currentGym].title}
-                  </motion.h2>
-                  <motion.p 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-white/60 italic text-sm md:text-base font-light"
-                  >
-                    {gymPhotos[currentGym].desc}
-                  </motion.p>
+          <div className="relative aspect-[4/3] md:aspect-[21/9] overflow-hidden bg-slate-100">
+            <AnimatePresence mode="wait">
+              <motion.button
+                key={`${activeArea.id}-${activeArea.currentIndex}`}
+                initial={{ opacity: 0, scale: 1.015 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.45 }}
+                onClick={() => setSelectedImage(activePhoto.image)}
+                className="absolute inset-0 w-full h-full text-left"
+              >
+                <OptimizedImage src={activePhoto.image} alt={activePhoto.title} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
+                <div className="absolute left-6 right-6 bottom-6 md:left-9 md:right-9 md:bottom-8 text-white">
+                  <span className="text-gold text-[9px] font-bold uppercase tracking-[0.25em]">
+                    {String(activeArea.currentIndex + 1).padStart(2, '0')} / {String(activeArea.photos.length).padStart(2, '0')}
+                  </span>
+                  <h3 className="text-2xl md:text-4xl font-serif italic mt-2">{activePhoto.title}</h3>
+                  <p className="text-white/70 text-sm mt-2 max-w-xl">{activePhoto.desc}</p>
                 </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+              </motion.button>
+            </AnimatePresence>
+          </div>
 
-        {/* Thumbnails Navigation */}
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-4 no-scrollbar">
-          {gymPhotos.map((item, idx) => (
-            <button
-              key={`thumb-gym-${item.id}`}
-              onClick={() => setCurrentGym(idx)}
-              className={`relative flex-shrink-0 w-24 md:w-32 aspect-video rounded-sm overflow-hidden transition-all duration-500 ${idx === currentGym ? 'ring-2 ring-gold scale-105 z-10' : 'opacity-40 hover:opacity-100'}`}
-            >
-              <img src={item.image} className="w-full h-full object-cover" alt="" />
-            </button>
-          ))}
+          <div className="mt-4 grid grid-flow-col auto-cols-[7rem] md:auto-cols-[9rem] gap-3 overflow-x-auto pb-3 no-scrollbar">
+            {activeArea.photos.map((photo, idx) => (
+              <button
+                key={`${activeArea.id}-${photo.id}`}
+                onClick={() => activeArea.setCurrentIndex(idx)}
+                aria-label={`Ver ${photo.title}`}
+                className={`relative aspect-[4/3] overflow-hidden border-2 transition-all ${
+                  idx === activeArea.currentIndex ? 'border-gold opacity-100' : 'border-transparent opacity-45 hover:opacity-100'
+                }`}
+              >
+                <OptimizedImage src={photo.image} alt="" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -2546,7 +2514,7 @@ const InstallationsPage = () => {
               className="relative max-w-7xl w-full h-full flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <img 
+              <OptimizedImage 
                 src={selectedImage} 
                 className="max-w-full max-h-full object-contain shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] ring-1 ring-black/5"
               />
@@ -2572,7 +2540,7 @@ const MaintenanceMode = () => {
         className="max-w-2xl relative z-10"
       >
         <div className="mb-12">
-          <img src="/images/logo.png" alt="Club del Lago" className="h-24 w-auto object-contain mx-auto mb-6" />
+          <OptimizedImage src="/images/logo.png" alt="Club del Lago" className="h-24 w-auto object-contain mx-auto mb-6" />
           <h2 className="text-gold text-4xl md:text-5xl font-serif italic mb-2">Club del Lago</h2>
           <div className="h-px w-24 bg-gold/50 mx-auto" />
         </div>
@@ -2632,7 +2600,6 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/instalaciones" element={<InstallationsPage />} />
             <Route path="/deportes" element={<SportsPage />} />
-            <Route path="/directorio" element={<DirectoryPage />} />
             <Route path="/restaurante" element={<RestaurantPage />} />
             <Route path="/eventos" element={<EventosPage />} />
           </Routes>
