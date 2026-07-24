@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, type ImgHTMLAttributes } from 'react';
 import { 
   Menu, X, ChevronRight, ChevronLeft, Phone, Mail, MapPin, 
   Instagram, Facebook, Clock, Trophy, Users, 
@@ -8,82 +8,27 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { db, auth } from './firebase';
-import { collection, addDoc, serverTimestamp, doc, getDocFromServer } from 'firebase/firestore';
 
-enum OperationType {
-  CREATE = 'create',
-  UPDATE = 'update',
-  DELETE = 'delete',
-  LIST = 'list',
-  GET = 'get',
-  WRITE = 'write',
-}
+const OptimizedImage = ({ src, alt = '', ...props }: ImgHTMLAttributes<HTMLImageElement>) => {
+  const isPriorityImage = src === '/images/hero.webp';
 
-interface FirestoreErrorInfo {
-  error: string;
-  operationType: OperationType;
-  path: string | null;
-  authInfo: {
-    userId?: string | null;
-    email?: string | null;
-    emailVerified?: boolean | null;
-    isAnonymous?: boolean | null;
-    tenantId?: string | null;
-    providerInfo?: {
-      providerId?: string | null;
-      email?: string | null;
-    }[];
-  }
-}
-
-function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
-  const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
-    authInfo: {
-      userId: auth.currentUser?.uid,
-      email: auth.currentUser?.email,
-      emailVerified: auth.currentUser?.emailVerified,
-      isAnonymous: auth.currentUser?.isAnonymous,
-      tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData?.map(provider => ({
-        providerId: provider.providerId,
-        email: provider.email,
-      })) || []
-    },
-    operationType,
-    path
-  }
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
-}
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading={isPriorityImage ? 'eager' : 'lazy'}
+      decoding="async"
+      fetchPriority={isPriorityImage ? 'high' : 'auto'}
+      {...props}
+    />
+  );
+};
 
 // --- Components ---
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    // Test Firestore connection
-    const testConnection = async () => {
-      try {
-        console.log("Checking Firestore connection...");
-        // Use a timeout for the test to avoid hanging
-        const docRef = doc(db, 'test', 'connection');
-        await getDocFromServer(docRef);
-        console.log("Firestore connection successful.");
-      } catch (error) {
-        console.warn("Firestore connectivity check failed (expected behavior if still provisioning):", error);
-        if (error instanceof Error) {
-          if (error.message.includes('the client is offline') || error.message.includes('Backend didn\'t respond')) {
-             console.info("Firestore status: The database might still be provisioning. This feature will be available once the backend is ready.");
-          }
-        }
-      }
-    };
-    testConnection();
-  }, []);
 
   const navLinks = [
     { name: 'Inicio', href: pathname === '/' ? '#inicio' : '/' },
@@ -99,7 +44,7 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-navy text-white h-20 flex items-center justify-between px-6 md:px-12 border-b-4 border-gold shrink-0">
       <div className="flex items-center gap-3">
         <Link to="/" className="flex items-center gap-4 group">
-          <img src="/images/logo.png" alt="Club del Lago Logo" className="h-14 w-auto object-contain" />
+          <OptimizedImage src="/images/logo.png" alt="Club del Lago Logo" className="h-14 w-auto object-contain" />
           <div className="hidden sm:block">
             <h1 className="text-xl font-bold tracking-tight leading-none uppercase group-hover:text-gold transition-colors">Club del Lago</h1>
           </div>
@@ -171,9 +116,9 @@ const Navbar = () => {
                   </a>
                 )
               ))}
-              <button className="btn-outline w-full">
+              <a href="/#contacto" className="btn-outline w-full text-center">
                 Solicitar Membresía
-              </button>
+              </a>
             </div>
           </motion.div>
         )}
@@ -195,12 +140,18 @@ const Hero = () => {
             <p className="text-sm text-slate-200 max-w-md leading-relaxed mb-8 drop-shadow-[0_1px_5px_rgba(0,0,0,0.5)]">
               Disfrute de las mejores instalaciones deportivas y sociales de Monterrey. Un espacio diseñado para el bienestar y la integración de toda su familia.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-3">
+              <Link to="/instalaciones" className="inline-flex items-center gap-2 bg-gold px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-navy transition-colors hover:bg-white">
+                Explorar instalaciones <ArrowRight size={14} />
+              </Link>
+              <a href="#contacto" className="inline-flex items-center border border-white/50 px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-navy">
+                Solicitar información
+              </a>
             </div>
           </div>
           
-          <img 
-            src="/images/hero.jpg" 
+          <OptimizedImage 
+            src="/images/hero.webp" 
             alt="Club Layout" 
             className="w-full h-full object-cover"
           />
@@ -222,22 +173,20 @@ const Hero = () => {
           <div className="bg-white border border-slate-200 p-8">
             <div className="flex justify-between items-end mb-6">
               <h3 className="text-navy font-bold uppercase text-xs tracking-widest">Próximos Eventos</h3>
-              <span className="text-[10px] text-forest font-bold underline cursor-pointer">Ver todos</span>
+              <Link to="/eventos" className="text-[10px] text-forest font-bold underline">Ver todos</Link>
             </div>
             <div className="space-y-5">
               <div className="flex gap-4 border-b border-slate-100 pb-4">
                 <div className="text-center shrink-0">
-                  <span className="block text-lg font-bold text-navy leading-none">19</span>
-                  <span className="text-[9px] uppercase text-slate-400">Junio</span>
+                  <Calendar size={20} className="text-gold" aria-hidden="true" />
                 </div>
-                <p className="text-xs font-medium text-slate-600">Celebración del Día del Padre en el área de la Alberca Olímpica.</p>
+                <p className="text-xs font-medium text-slate-600">Conoce nuestros espacios y opciones para celebrar momentos especiales.</p>
               </div>
               <div className="flex gap-4">
                 <div className="text-center shrink-0">
-                  <span className="block text-lg font-bold text-navy leading-none">30-31</span>
-                  <span className="text-[9px] uppercase text-slate-400">Mayo</span>
+                  <Trophy size={20} className="text-forest" aria-hidden="true" />
                 </div>
-                <p className="text-xs font-medium text-slate-600">Copa Lagarto - Torneo de Natación.</p>
+                <p className="text-xs font-medium text-slate-600">Consulta academias, horarios y actividades deportivas vigentes.</p>
               </div>
             </div>
           </div>
@@ -291,8 +240,8 @@ const About = () => {
             className="relative"
           >
             <div className="aspect-[4/3] overflow-hidden border border-slate-100 p-2 bg-white shadow-sm">
-              <img 
-                src="/images/club5.jpg" 
+              <OptimizedImage 
+                src="/images/club5.webp" 
                 alt="Comunidad" 
                 className="w-full h-full object-cover"
               />
@@ -400,14 +349,14 @@ const Restaurant = () => {
           className="grid grid-cols-2 gap-4 h-full"
         >
           <div className="space-y-4">
-            <img src="/images/brasas.jpg" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Snack Brasas" />
+            <OptimizedImage src="/images/brasas.webp" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Snack Brasas" />
             <div className="bg-forest/10 p-6 flex items-center justify-center border-l-4 border-forest">
                <span className="text-forest font-bold uppercase text-[10px] tracking-widest text-center">Insumos de <br/> Primera Calidad</span>
             </div>
           </div>
           <div className="space-y-4 pt-12">
-            <img src="/images/Palmas.jpg" className="rounded-sm h-44 w-full object-cover border border-slate-100" alt="Restaurante" />
-            <img src="/images/bar.jpg" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Bar Terraza" />
+            <OptimizedImage src="/images/Palmas.webp" className="rounded-sm h-44 w-full object-cover border border-slate-100" alt="Restaurante" />
+            <OptimizedImage src="/images/bar.webp" className="rounded-sm h-64 w-full object-cover border border-slate-100" alt="Bar Terraza" />
           </div>
         </motion.div>
       </div>
@@ -449,7 +398,7 @@ const AppBanner = () => {
             <div className="w-64 h-[500px] bg-slate-800 rounded-[2rem] border-8 border-navy shadow-2xl relative overflow-hidden">
                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-navy rounded-b-xl z-20" />
                <div className="w-full h-full p-6 flex flex-col items-center justify-center text-center relative z-10">
-                  <img src="/images/logo.png" alt="DelagoApp Logo" className="w-24 h-auto object-contain mb-8 filter brightness-110" />
+                  <OptimizedImage src="/images/logo.png" alt="DelagoApp Logo" className="w-24 h-auto object-contain mb-8 filter brightness-110" />
                   <h4 className="text-white font-bold uppercase tracking-widest text-lg">Club del Lago</h4>
                   <p className="text-gold text-[10px] uppercase font-bold mt-2 tracking-[0.3em]">Mobile Portal</p>
                </div>
@@ -475,10 +424,13 @@ const Contact = () => {
     e.preventDefault();
     setStatus('submitting');
     
-    const path = 'contacts';
     try {
-      // 1. Guardar en Firestore para respaldo
-      await addDoc(collection(db, path), {
+      // Firebase se descarga únicamente cuando alguien envía el formulario.
+      const [{ db }, { collection, addDoc, serverTimestamp }] = await Promise.all([
+        import('./firebase'),
+        import('firebase/firestore')
+      ]);
+      await addDoc(collection(db, 'contacts'), {
         ...formData,
         createdAt: serverTimestamp()
       });
@@ -498,9 +450,8 @@ const Contact = () => {
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setStatus('idle'), 5000);
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error sending contact form: ", error);
       setStatus('error');
-      handleFirestoreError(error, OperationType.WRITE, path);
     }
   };
 
@@ -617,7 +568,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
           <div className="flex items-center gap-4">
-             <img src="/images/logo.png" alt="Club del Lago" className="h-10 w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+             <OptimizedImage src="/images/logo.png" alt="Club del Lago" className="h-10 w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
              <span className="font-display font-bold text-navy text-sm uppercase tracking-widest">Club del Lago</span>
           </div>
           
@@ -847,7 +798,7 @@ const SportsPage = () => {
                 >
                   <div className="w-full md:w-1/2 h-full relative">
                     <div className="w-full h-full bg-white border border-slate-100 p-2 rounded-sm shadow-xl overflow-hidden">
-                      <img 
+                      <OptimizedImage 
                         src={encodeURI(`/images/flyers/${featuredFlyers[currentFeaturedIndex]}`)} 
                         alt="Featured" 
                         className="w-full h-full object-contain"
@@ -987,7 +938,7 @@ const SportsPage = () => {
                     className="min-w-[280px] md:min-w-[320px] snap-start group cursor-pointer"
                   >
                     <div className={`aspect-[3/4] overflow-hidden border border-slate-100 bg-slate-50 relative ${flyer.includes('BASQUETBOL') ? 'p-20 md:p-24' : 'p-2'}`}>
-                      <img 
+                      <OptimizedImage 
                         src={encodeURI(`/images/flyers/${flyer}`)} 
                         alt={flyer} 
                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
@@ -1404,7 +1355,7 @@ const RestaurantPage = () => {
       id: 'las-palmas',
       title: 'Restaurante Las Palmas',
       description: 'Un espacio ideal para disfrutar momentos en familia y compartir la tradición gastronómica del Club.',
-      image: '/images/Palmas.jpg',
+      image: '/images/Palmas.webp',
       menus: [
         { label: 'Menú de Desayunos', type: 'digital', file: null, action: () => { setMenuType('desayunos'); setActiveCategory('Fruta & Hot Cakes'); setShowDetailedMenu(true); } },
         { label: 'Menú de Comidas', type: 'digital', file: null, action: () => { setMenuType('comidas'); setActiveCategory('Principales'); setShowDetailedMenu(true); } }
@@ -1414,7 +1365,7 @@ const RestaurantPage = () => {
       id: 'snack-brasas',
       title: 'Snack Brasas',
       description: 'Un ambiente relajado pensado para convivir, disfrutar y hacer una pausa durante el día.',
-      image: '/images/brasas.jpg',
+      image: '/images/brasas.webp',
       menus: [
         { label: 'Menú Desayunos', type: 'digital', file: null, action: () => { setMenuType('snack-desayunos'); setActiveCategory('Desayunos'); setShowDetailedMenu(true); } },
         { label: 'Menú Comidas', type: 'digital', file: null, action: () => { setMenuType('snack-comidas'); setActiveCategory('Tacos & Tostadas'); setShowDetailedMenu(true); } }
@@ -1424,7 +1375,7 @@ const RestaurantPage = () => {
       id: 'bar-terraza',
       title: 'Bar Terraza',
       description: 'El lugar perfecto para reunirse, relajarse y disfrutar la vida social del Club.',
-      image: '/images/bar.jpg',
+      image: '/images/bar.webp',
       menus: [
         { label: 'Ver Menú Digital', type: 'digital', file: null, action: () => { setMenuType('terraza'); setActiveCategory('Entradas & Botanas'); setShowDetailedMenu(true); } }
       ]
@@ -1536,7 +1487,7 @@ const RestaurantPage = () => {
               >
                 <div className="lg:w-1/2 w-full">
                   <div className="aspect-[16/10] overflow-hidden border border-slate-100 p-2 bg-white shadow-sm relative group">
-                    <img src={area.image} alt={area.title} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" />
+                    <OptimizedImage src={area.image} alt={area.title} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" />
                   </div>
                 </div>
 
@@ -1630,7 +1581,7 @@ const EventosPage = () => {
       price: 4450,
       formatPrice: '$4,450',
       tagline: 'Elegancia junto al agua',
-      image: '/images/gallery/alberca 1.png',
+      image: '/images/gallery/alberca 1.webp',
       capacity: '20 a 100 personas',
       maxCap: 100,
       minCap: 20,
@@ -1653,7 +1604,7 @@ const EventosPage = () => {
       price: 4450,
       formatPrice: '$4,450',
       tagline: 'Refinado ambiente de jardín',
-      image: '/images/gallery/alberca 2.png',
+      image: '/images/gallery/alberca 2.webp',
       capacity: '50 personas',
       maxCap: 50,
       minCap: 10,
@@ -1676,7 +1627,7 @@ const EventosPage = () => {
       price: 5000,
       formatPrice: '$5,000',
       tagline: 'Distinción y sofisticación diurna',
-      image: '/images/bar.jpg',
+      image: '/images/bar.webp',
       capacity: '90 personas',
       maxCap: 90,
       minCap: 10,
@@ -1699,7 +1650,7 @@ const EventosPage = () => {
       price: 3000,
       formatPrice: '$3,000',
       tagline: 'Diversión y calidez familiar',
-      image: '/images/gallery/alberca 3.png',
+      image: '/images/gallery/alberca 3.webp',
       capacity: '50 personas',
       maxCap: 50,
       minCap: 10,
@@ -1722,7 +1673,7 @@ const EventosPage = () => {
       price: 3400,
       formatPrice: '$3,400',
       tagline: 'Amplitud y diseño al aire libre',
-      image: '/images/gallery/alberca 4.png',
+      image: '/images/gallery/alberca 4.webp',
       capacity: '60 personas',
       maxCap: 60,
       minCap: 10,
@@ -1745,7 +1696,7 @@ const EventosPage = () => {
       price: 2800,
       formatPrice: '$2,800',
       tagline: 'La tradición de la cocina a la brasa',
-      image: '/images/brasas.jpg',
+      image: '/images/brasas.webp',
       capacity: '20 personas',
       maxCap: 20,
       minCap: 5,
@@ -1768,7 +1719,7 @@ const EventosPage = () => {
       price: 0,
       formatPrice: 'Sin Costo',
       tagline: 'Privilegio exclusivo de nuestra comunidad',
-      image: '/images/Palmas.jpg',
+      image: '/images/Palmas.webp',
       capacity: 'Socio + Máx 2 invitados con pase',
       maxCap: 3, 
       minCap: 1,
@@ -1916,7 +1867,7 @@ Me gustaría confirmar la disponibilidad de esta fecha para poder realizar la se
                 >
                   {/* Card Image */}
                   <div className="relative h-56 overflow-hidden bg-slate-100 group">
-                    <img 
+                    <OptimizedImage 
                       src={space.image} 
                       alt={space.title} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -2311,29 +2262,29 @@ const InstallationsPage = () => {
   const [currentGym, setCurrentGym] = useState(0);
 
   const poolPhotos = [
-    { id: 1, title: 'Alberca Olímpica Lagartos', image: '/images/gallery/ALBERCA INTERIROR.png', desc: 'Nuestra icónica alberca techada, el alma deportiva del club.' },
-    { id: 2, title: 'Entrenamiento de Alto Nivel', image: '/images/gallery/ALBERCA INTERIOR 2.png', desc: 'Carriles diseñados para la competencia y el perfeccionamiento.' },
-    { id: 3, title: 'Mañanas de Distinción', image: '/images/gallery/alberca 1.png', desc: 'Vistas inigualables mientras disfrutas de un nado revitalizante.' },
-    { id: 4, title: 'Reflejos del Club', image: '/images/gallery/ALBERCA INTERIOR 3.png', desc: 'Arquitectura y deporte en perfecta armonía.' },
-    { id: 5, title: 'Atardeceres en el Agua', image: '/images/gallery/alberca 2.png', desc: 'El lugar preferido para el descanso y la convivencia familiar.' },
-    { id: 6, title: 'Tradición y Deporte', image: '/images/gallery/alberca 3.png', desc: 'Más de 40 años forjando nadadores de excelencia.' },
-    { id: 7, title: 'Espacios que Inspiran', image: '/images/gallery/alberca 4.png', desc: 'Rodeados de la belleza natural de Monterrey.' },
-    { id: 8, title: 'Vivir el Club', image: '/images/gallery/ALBERCA 5.png', desc: 'Cada rincón pensado para tu bienestar.' },
-    { id: 9, title: 'Momentos de Sol', image: '/images/gallery/ALBERCA INTERIROR 2.png', desc: 'El corazón del verano en Club del Lago.' },
+    { id: 1, title: 'Alberca Olímpica Lagartos', image: '/images/gallery/ALBERCA INTERIROR.webp', desc: 'Nuestra icónica alberca techada, el alma deportiva del club.' },
+    { id: 2, title: 'Entrenamiento de Alto Nivel', image: '/images/gallery/ALBERCA INTERIOR 2.webp', desc: 'Carriles diseñados para la competencia y el perfeccionamiento.' },
+    { id: 3, title: 'Mañanas de Distinción', image: '/images/gallery/alberca 1.webp', desc: 'Vistas inigualables mientras disfrutas de un nado revitalizante.' },
+    { id: 4, title: 'Reflejos del Club', image: '/images/gallery/ALBERCA INTERIOR 3.webp', desc: 'Arquitectura y deporte en perfecta armonía.' },
+    { id: 5, title: 'Atardeceres en el Agua', image: '/images/gallery/alberca 2.webp', desc: 'El lugar preferido para el descanso y la convivencia familiar.' },
+    { id: 6, title: 'Tradición y Deporte', image: '/images/gallery/alberca 3.webp', desc: 'Más de 40 años forjando nadadores de excelencia.' },
+    { id: 7, title: 'Espacios que Inspiran', image: '/images/gallery/alberca 4.webp', desc: 'Rodeados de la belleza natural de Monterrey.' },
+    { id: 8, title: 'Vivir el Club', image: '/images/gallery/ALBERCA 5.webp', desc: 'Cada rincón pensado para tu bienestar.' },
+    { id: 9, title: 'Momentos de Sol', image: '/images/gallery/ALBERCA INTERIROR 2.webp', desc: 'El corazón del verano en Club del Lago.' },
   ];
 
   const gymPhotos = [
-    { id: 1, title: 'Equipamiento de Vanguardia', image: '/images/gallery/gym 2.png', desc: 'Entrena con la mejor panorámica mientras te superas a ti mismo.' },
-    { id: 2, title: 'Zona de Cardio', image: '/images/gallery/gym 3.png', desc: 'Máquinas de última generación para tu salud cardiovascular.' },
-    { id: 3, title: 'Peso Libre', image: '/images/gallery/gym 4.png', desc: 'Espacios amplios y organizados para tu rutina de fuerza.' },
-    { id: 4, title: 'Entrenamiento Integral', image: '/images/gallery/gym 5.png', desc: 'Cada detalle pensado para una experiencia fitness completa.' },
-    { id: 5, title: 'Superación Diaria', image: '/images/gallery/gym 6.png', desc: 'El ambiente perfecto para mantener tu motivación al máximo.' },
-    { id: 6, title: 'Tecnología Deportiva', image: '/images/gallery/gym 7.png', desc: 'Equipos Cybex diseñados para un movimiento natural y seguro.' },
-    { id: 7, title: 'Rendimiento Extremo', image: '/images/gallery/gym 8.png', desc: 'Lleva tu capacidad física al siguiente nivel con nuestras instalaciones.' },
-    { id: 8, title: 'Paz y Esfuerzo', image: '/images/gallery/gym 9.png', desc: 'Un espacio donde el bienestar mental y físico se encuentran.' },
-    { id: 9, title: 'Comunidad Fitness', image: '/images/gallery/gym 10.png', desc: 'Únete a los mejores entrenamientos en un entorno exclusivo.' },
-    { id: 10, title: 'Equipamiento Premium', image: '/images/gallery/gym 11.png', desc: 'Variedad de máquinas para trabajar cada grupo muscular.' },
-    { id: 11, title: 'Fuerza sin Límites', image: '/images/gallery/gym 12.png', desc: 'Instalaciones diseñadas para el alto rendimiento.' },
+    { id: 1, title: 'Equipamiento de Vanguardia', image: '/images/gallery/gym 2.webp', desc: 'Entrena con la mejor panorámica mientras te superas a ti mismo.' },
+    { id: 2, title: 'Zona de Cardio', image: '/images/gallery/gym 3.webp', desc: 'Máquinas de última generación para tu salud cardiovascular.' },
+    { id: 3, title: 'Peso Libre', image: '/images/gallery/gym 4.webp', desc: 'Espacios amplios y organizados para tu rutina de fuerza.' },
+    { id: 4, title: 'Entrenamiento Integral', image: '/images/gallery/gym 5.webp', desc: 'Cada detalle pensado para una experiencia fitness completa.' },
+    { id: 5, title: 'Superación Diaria', image: '/images/gallery/gym 6.webp', desc: 'El ambiente perfecto para mantener tu motivación al máximo.' },
+    { id: 6, title: 'Tecnología Deportiva', image: '/images/gallery/gym 7.webp', desc: 'Equipos Cybex diseñados para un movimiento natural y seguro.' },
+    { id: 7, title: 'Rendimiento Extremo', image: '/images/gallery/gym 8.webp', desc: 'Lleva tu capacidad física al siguiente nivel con nuestras instalaciones.' },
+    { id: 8, title: 'Paz y Esfuerzo', image: '/images/gallery/gym 9.webp', desc: 'Un espacio donde el bienestar mental y físico se encuentran.' },
+    { id: 9, title: 'Comunidad Fitness', image: '/images/gallery/gym 10.webp', desc: 'Únete a los mejores entrenamientos en un entorno exclusivo.' },
+    { id: 10, title: 'Equipamiento Premium', image: '/images/gallery/gym 11.webp', desc: 'Variedad de máquinas para trabajar cada grupo muscular.' },
+    { id: 11, title: 'Fuerza sin Límites', image: '/images/gallery/gym 12.webp', desc: 'Instalaciones diseñadas para el alto rendimiento.' },
   ];
 
   useEffect(() => {
@@ -2386,7 +2337,7 @@ const InstallationsPage = () => {
               className="absolute inset-0 cursor-pointer"
               onClick={() => setSelectedImage(poolPhotos[currentPool].image)}
             >
-              <img 
+              <OptimizedImage 
                 src={poolPhotos[currentPool].image} 
                 alt={poolPhotos[currentPool].title}
                 className="w-full h-full object-cover"
@@ -2423,7 +2374,7 @@ const InstallationsPage = () => {
               onClick={() => setCurrentPool(idx)}
               className={`relative flex-shrink-0 w-24 md:w-32 aspect-video rounded-sm overflow-hidden transition-all duration-500 ${idx === currentPool ? 'ring-2 ring-gold scale-105 z-10' : 'opacity-40 hover:opacity-100'}`}
             >
-              <img src={item.image} className="w-full h-full object-cover" alt="" />
+              <OptimizedImage src={item.image} className="w-full h-full object-cover" alt="" />
             </button>
           ))}
         </div>
@@ -2461,7 +2412,7 @@ const InstallationsPage = () => {
               className="absolute inset-0 cursor-pointer"
               onClick={() => setSelectedImage(gymPhotos[currentGym].image)}
             >
-              <img 
+              <OptimizedImage 
                 src={gymPhotos[currentGym].image} 
                 alt={gymPhotos[currentGym].title}
                 className="w-full h-full object-cover"
@@ -2498,7 +2449,7 @@ const InstallationsPage = () => {
               onClick={() => setCurrentGym(idx)}
               className={`relative flex-shrink-0 w-24 md:w-32 aspect-video rounded-sm overflow-hidden transition-all duration-500 ${idx === currentGym ? 'ring-2 ring-gold scale-105 z-10' : 'opacity-40 hover:opacity-100'}`}
             >
-              <img src={item.image} className="w-full h-full object-cover" alt="" />
+              <OptimizedImage src={item.image} className="w-full h-full object-cover" alt="" />
             </button>
           ))}
         </div>
@@ -2546,7 +2497,7 @@ const InstallationsPage = () => {
               className="relative max-w-7xl w-full h-full flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <img 
+              <OptimizedImage 
                 src={selectedImage} 
                 className="max-w-full max-h-full object-contain shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] ring-1 ring-black/5"
               />
@@ -2572,7 +2523,7 @@ const MaintenanceMode = () => {
         className="max-w-2xl relative z-10"
       >
         <div className="mb-12">
-          <img src="/images/logo.png" alt="Club del Lago" className="h-24 w-auto object-contain mx-auto mb-6" />
+          <OptimizedImage src="/images/logo.png" alt="Club del Lago" className="h-24 w-auto object-contain mx-auto mb-6" />
           <h2 className="text-gold text-4xl md:text-5xl font-serif italic mb-2">Club del Lago</h2>
           <div className="h-px w-24 bg-gold/50 mx-auto" />
         </div>
