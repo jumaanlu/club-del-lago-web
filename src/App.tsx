@@ -1579,21 +1579,6 @@ const RestaurantPage = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 bg-slate-50 border-y border-slate-200">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h3 className="text-3xl font-serif italic text-navy mb-6">¿Desea reservar una mesa?</h3>
-          <p className="text-slate-600 italic mb-10 leading-relaxed">Nuestro equipo está listo para brindarle la mejor experiencia gastronómica. Para reservaciones o eventos especiales, contáctenos vía WhatsApp o teléfono.</p>
-          <div className="flex flex-wrap justify-center gap-6">
-            <a href="tel:8196895727" className="flex items-center gap-3 text-navy font-bold uppercase text-xs tracking-widest border-b border-gold pb-1 hover:text-gold transition-colors">
-              <Phone size={14} /> 81 9689 5727
-            </a>
-            <a href="https://wa.me/528134028407" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-navy text-white px-6 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-gold transition-colors rounded-sm shadow-md">
-               <Smartphone size={14} /> WhatsApp Restaurante
-            </a>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
