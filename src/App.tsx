@@ -4,8 +4,8 @@ import {
   Instagram, Facebook, Clock, Trophy, Users, 
   Dumbbell, Utensils, Calendar, Smartphone,
   ExternalLink, ArrowRight, Loader2, CheckCircle2, Plus,
-  Camera, Maximize2, Check, Sparkles, Calculator, AlertCircle, Percent,
-  Search, Eye, Download, Share2, FileText, Bell
+  Camera, Check, AlertCircle,
+  Search
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
@@ -88,7 +88,6 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Inicio', href: pathname === '/' ? '#inicio' : '/' },
-    { name: 'Comunicados', href: '/comunicados', isPage: true },
     { name: 'Instalaciones', href: '/instalaciones', isPage: true },
     { name: 'Deportes', href: '/deportes', isPage: true },
     { name: 'Directorio', href: '/directorio', isPage: true },
@@ -227,19 +226,14 @@ const Hero = () => {
               <span className="text-[10px] text-forest font-bold underline cursor-pointer">Ver todos</span>
             </div>
             <div className="space-y-5">
-              <div className="flex gap-4 border-b border-slate-100 pb-4">
-                <div className="text-center shrink-0">
-                  <span className="block text-lg font-bold text-navy leading-none">19</span>
-                  <span className="text-[9px] uppercase text-slate-400">Junio</span>
-                </div>
-                <p className="text-xs font-medium text-slate-600">Celebración del Día del Padre en el área de la Alberca Olímpica.</p>
-              </div>
               <div className="flex gap-4">
                 <div className="text-center shrink-0">
-                  <span className="block text-lg font-bold text-navy leading-none">30-31</span>
-                  <span className="text-[9px] uppercase text-slate-400">Mayo</span>
+                  <span className="block text-lg font-bold text-navy leading-none">09</span>
+                  <span className="text-[9px] uppercase text-slate-400">Octubre</span>
                 </div>
-                <p className="text-xs font-medium text-slate-600">Copa Lagarto - Torneo de Natación.</p>
+                <p className="text-xs font-medium text-slate-600">
+                  Cena Maridaje “Vinos &amp; Sabores”, 9:00 pm en Palapa de Juegos.
+                </p>
               </div>
             </div>
           </div>
@@ -1586,25 +1580,6 @@ const RestaurantPage = () => {
 const EventosPage = () => {
   const [activeTab, setActiveTab] = useState<'all' | 'renta' | 'socios'>('all');
   const [selectedSpaceId, setSelectedSpaceId] = useState<string | null>(null);
-  
-  // Calculator state
-  const [calcSpace, setCalcSpace] = useState<string>('laguito1');
-  const [calcGuests, setCalcGuests] = useState<number>(50);
-  const [calcIsSocio, setCalcIsSocio] = useState<boolean>(true);
-  const [calcDate, setCalcDate] = useState<string>('');
-
-  const getFormattedDate = (dateStr: string) => {
-    if (!dateStr) return '';
-    try {
-      const parts = dateStr.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-      return dateStr;
-    } catch {
-      return dateStr;
-    }
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1779,42 +1754,8 @@ const EventosPage = () => {
     return s.type === activeTab;
   });
 
-  const selectedCalcSpace = spaces.find(s => s.id === calcSpace) || spaces[0];
-
-  const recommendedWaiters = Math.max(1, Math.ceil(calcGuests / 20));
-
-  const getCalculatedPrice = () => {
-    if (calcSpace === 'solosocios') {
-      return 0;
-    }
-    return selectedCalcSpace.price;
-  };
-
-  const calculatedBasePrice = getCalculatedPrice();
-  const dateReservationFee = 550;
-  // Reservation fee is now deducted from/included in the total cost rather than extra
-  const totalCost = calculatedBasePrice;
-  const remainingBalance = calculatedBasePrice > 0 ? Math.max(0, calculatedBasePrice - dateReservationFee) : 0;
-
   const handleConsultSpace = (spaceName: string) => {
     const text = `Hola Daniel Gonzalez, me gustaría solicitar informes sobre disponibilidad de espacio para el área de eventos "${spaceName}" en el Club del Lago. ¡Muchas gracias!`;
-    const url = `https://wa.me/528123870840?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleSendQuote = () => {
-    const formattedDate = getFormattedDate(calcDate);
-    const text = `Hola Daniel Gonzalez, he realizado una simulación de evento en la plataforma de Club del Lago:
-- Espacio Seleccionado: ${selectedCalcSpace.title}
-- Fecha Solicitada: ${formattedDate ? formattedDate : 'Por definir (consultar disponibilidad)'}
-- Número de Invitados: ${calcGuests} personas
-- ¿Soy Socio del Club?: ${calcIsSocio ? 'Sí' : 'No'}
-- Costo de Renta Total: ${totalCost === 0 ? 'Sin Costo de Renta' : `$${totalCost.toLocaleString()}`}
-- Anticipo de Separación (ya incluido): $${calculatedBasePrice > 0 ? dateReservationFee : 0}
-- Saldo Restante a Liquidar: ${calculatedBasePrice > 0 ? `$${remainingBalance.toLocaleString()}` : '$0'}
-- Servicio de Meseros sugerido/comentario: Contratarse en Área de Eventos (${recommendedWaiters} meseros recomendados para ${calcGuests} pers.)
-
-Me gustaría confirmar la disponibilidad de esta fecha para poder realizar la separación. Quedo al pendiente de los pasos a seguir.`;
     const url = `https://wa.me/528123870840?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
@@ -1987,205 +1928,6 @@ Me gustaría confirmar la disponibilidad de esta fecha para poder realizar la se
           </AnimatePresence>
         </div>
 
-        {/* Cost Estimation Simulator Widget */}
-        <div className="bg-white border border-slate-200 rounded-sm shadow-sm md:p-10 p-6 mb-24 grid grid-cols-1 lg:grid-cols-12 gap-10 relative overflow-hidden">
-          <div className="lg:col-span-12">
-            <div className="flex items-center gap-2 mb-2">
-              <Calculator size={16} className="text-gold" />
-              <span className="text-gold font-bold text-xs tracking-widest uppercase block italic">Cotizador Digital Interactivo</span>
-            </div>
-            <h2 className="text-navy text-2xl md:text-3xl font-display font-bold uppercase mb-4">Simulador de Presupuesto</h2>
-            <p className="text-slate-500 text-xs italic max-w-2xl leading-relaxed">
-              Planifique su celebración de forma transparente. Elija el área social de su preferencia, especifique el número total de invitados y su estatus de socio para autocalcular el monto estimado de su reservación.
-            </p>
-          </div>
-
-          {/* Left Column Controls */}
-          <div className="lg:col-span-7 space-y-8 pr-0 lg:pr-6 border-r-0 lg:border-r border-slate-200">
-            {/* Space selector */}
-            <div className="space-y-3">
-              <label className="block text-navy font-bold text-[10px] uppercase tracking-widest">
-                1. Selecciona el Área Social
-              </label>
-              <select
-                value={calcSpace}
-                onChange={(e) => setCalcSpace(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 p-3 text-xs text-navy font-medium tracking-wide focus:outline-hidden focus:ring-1 focus:ring-gold focus:border-gold cursor-pointer rounded-sm"
-              >
-                {spaces.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.title} ({s.formatPrice})
-                  </option>
-                ))}
-              </select>
-              <p className="text-slate-400 text-[9px] italic uppercase tracking-wider">
-                Capacidad Recomendada del Espacio: <span className="text-navy font-semibold">{selectedCalcSpace.capacity}</span>
-              </p>
-            </div>
-
-            {/* Guest slider */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <label className="block text-navy font-bold text-[10px] uppercase tracking-widest">
-                  2. Ingresa tus Invitados Estimados
-                </label>
-                <span className="bg-navy/5 text-navy font-bold text-xs px-2.5 py-0.5 tracking-wider rounded-sm">
-                  {calcGuests} personas
-                </span>
-              </div>
-              <input
-                type="range"
-                min="5"
-                max={selectedCalcSpace.id === 'solosocios' ? 3 : 130}
-                value={calcGuests}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  setCalcGuests(val);
-                }}
-                className="w-full accent-navy h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer"
-              />
-              {calcGuests > selectedCalcSpace.maxCap && (
-                <div className="bg-amber-50 text-amber-700 border border-amber-200 px-3.5 py-2.5 text-[10px] italic flex items-center gap-2 rounded-sm leading-normal">
-                  <AlertCircle size={14} className="shrink-0" />
-                  <span>
-                    Nota: La cantidad excede la capacidad recomendada de {selectedCalcSpace.capacity} para {selectedCalcSpace.title}.
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Socio Toggle */}
-            <div className="bg-slate-50 border border-slate-100 p-4 flex items-center justify-between rounded-sm">
-              <div className="space-y-1">
-                <span className="text-navy font-bold text-[10px] uppercase tracking-widest block">
-                  3. ¿Eres Socio Activo del Club?
-                </span>
-                <span className="text-slate-500 text-[10px] italic leading-relaxed block">
-                  Beneficios preferenciales del Club para su comunidad exclusiva
-                </span>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={calcIsSocio} 
-                  onChange={(e) => {
-                    const checked = e.target.checked;
-                    setCalcIsSocio(checked);
-                    // Force solosocios constraint
-                    if (!checked && calcSpace === 'solosocios') {
-                      setCalcSpace('laguito1');
-                    }
-                  }}
-                  className="sr-only peer" 
-                />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-navy"></div>
-              </label>
-            </div>
-
-            {/* Event Date Selector */}
-            <div className="space-y-3 pt-2">
-              <label className="block text-navy font-bold text-[10px] uppercase tracking-widest flex items-center gap-1.5">
-                <Calendar size={13} className="text-gold" />
-                4. Selecciona la Fecha del Evento
-              </label>
-              <input
-                type="date"
-                value={calcDate}
-                onChange={(e) => setCalcDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full bg-slate-50 border border-slate-200 p-3 text-xs text-navy font-medium tracking-wide focus:outline-hidden focus:ring-1 focus:ring-gold focus:border-gold cursor-pointer rounded-sm"
-              />
-              <p className="text-slate-400 text-[9px] italic uppercase tracking-wider">
-                Indique la fecha propuesta para verificar disponibilidad y apartar el espacio.
-              </p>
-            </div>
-            
-            {calcSpace === 'solosocios' && (
-              <div className="bg-blue-50 text-navy border border-blue-200 px-4 py-3.5 text-[10px] italic flex items-start gap-2 rounded-sm leading-relaxed">
-                <Sparkles size={14} className="text-gold mt-0.5 shrink-0 animate-pulse" />
-                <span>
-                  <strong>¡Beneficio de Socios!</strong> Este paquete especial está reservado estrictamente para convivir únicamente entre Socios e incluye montaje básico del Club gratuito. Se permite un límite estricto de hasta 2 invitados externos con pase pre-aprobado.
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Right Column Summary Card */}
-          <div className="lg:col-span-5 bg-navy text-white rounded-sm p-8 shadow-xs relative overflow-hidden flex flex-col justify-between">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-full translate-x-12 -translate-y-12" />
-            
-            <div>
-              <span className="text-gold font-bold text-[9px] uppercase tracking-widest block italic mb-2">Desglose Estimado</span>
-              <h3 className="text-white text-lg font-serif italic mb-6 leading-none">Resumen de Cotización</h3>
-              
-              <div className="space-y-4 border-b border-white/15 pb-6">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-300">Fecha Tentativa:</span>
-                  <span className="font-bold tracking-wider text-gold">
-                    {calcDate ? getFormattedDate(calcDate) : 'Por confirmar'}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-300">Base Renta ({selectedCalcSpace.title}):</span>
-                  <span className="font-bold tracking-wider">
-                    {calculatedBasePrice === 0 ? 'Sin Renta' : `$${calculatedBasePrice.toLocaleString()}`}
-                  </span>
-                </div>
-                {calculatedBasePrice > 0 ? (
-                  <>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-300 font-medium">Anticipo de Separación (ya incluido):</span>
-                      <span className="font-bold tracking-wider text-green-300">-$550</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-300 font-medium">Saldo Restante por Liquidar:</span>
-                      <span className="font-bold tracking-wider">${remainingBalance.toLocaleString()}</span>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-300 font-medium">Depósito de Garantía (Reembolsable):</span>
-                    <span className="font-bold tracking-wider">$550</span>
-                  </div>
-                )}
-                <div className="flex justify-between items-start text-xs">
-                  <span className="text-slate-300 font-medium flex items-center gap-1.5">
-                    Meseros Recomendados:
-                  </span>
-                  <span className="text-right text-slate-400 text-[10px] block font-medium">
-                    {recommendedWaiters} meseros <br/>
-                    <span className="text-[8px] italic tracking-tight">(Se contratan por separado)</span>
-                  </span>
-                </div>
-              </div>
-
-              {/* Total Card */}
-              <div className="py-6 flex justify-between items-baseline">
-                <div>
-                  <span className="text-gold font-bold text-[10px] uppercase tracking-widest leading-none block">Total Estimado:</span>
-                  <span className="text-[9px] text-slate-300 block mt-0.5">(Renta con separación incluida)</span>
-                </div>
-                <span className="text-3xl font-bold text-gold font-sans tracking-tight text-right">
-                  ${totalCost.toLocaleString()}
-                  <span className="text-[10px] text-white italic font-normal block text-right mt-1 tracking-normal">pesos m.n.</span>
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-4 mt-6">
-              <button
-                onClick={handleSendQuote}
-                className="w-full bg-gold text-white hover:bg-white hover:text-navy px-5 py-3.5 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm shadow-sm flex items-center justify-center gap-2"
-              >
-                <Smartphone size={14} /> Solicitar Fecha por WhatsApp
-              </button>
-              <p className="text-slate-400 text-[8px] uppercase tracking-widest text-center italic">
-                Sujeto a confirmación y disponibilidad del Club
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Policies and Terms Block */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24">
           <div className="bg-white border border-slate-200 p-8 rounded-sm shadow-xs">
@@ -2281,112 +2023,6 @@ const HomePage = () => {
       <AppBanner />
       <Contact />
     </>
-  );
-};
-
-const ComunicadosPage = () => {
-  const [selectedNoticeImage, setSelectedNoticeImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  const noticeImage = '/images/Convocatoria-3-ag.jpeg';
-
-  return (
-    <div className="pt-20 bg-slate-50 min-h-screen font-sans">
-      {/* Header */}
-      <section className="relative py-14 bg-navy text-white overflow-hidden border-b-4 border-gold">
-        <div className="max-w-7xl mx-auto px-6 relative z-20 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="text-gold font-bold tracking-[0.4em] uppercase text-xs mb-2 block italic">Club del Lago A.C.</span>
-            <h1 className="text-3xl md:text-5xl font-display font-black tracking-tighter uppercase text-white mb-2">
-              Comunicados
-            </h1>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Image Container */}
-      <div className="max-w-4xl mx-auto px-4 py-12 flex flex-col items-center">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
-          className="bg-white p-3 md:p-6 rounded-sm shadow-xl border border-slate-200 cursor-pointer group hover:border-gold transition-all w-full max-w-3xl"
-          onClick={() => setSelectedNoticeImage(noticeImage)}
-        >
-          <div className="relative overflow-hidden">
-            <img 
-              src={noticeImage} 
-              alt="Comunicado Oficial - Club del Lago A.C." 
-              className="w-full h-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-[1.01]"
-            />
-            <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white p-4">
-              <Maximize2 size={36} className="text-gold mb-2" />
-              <span className="text-xs font-bold uppercase tracking-widest bg-navy/80 px-4 py-2 rounded-sm border border-gold">
-                Haga clic para ampliar
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Action Buttons */}
-        <div className="mt-6 flex flex-wrap gap-4 justify-center">
-          <button
-            onClick={() => setSelectedNoticeImage(noticeImage)}
-            className="inline-flex items-center gap-2 bg-navy hover:bg-gold hover:text-navy text-white font-bold px-6 py-3 text-xs uppercase tracking-widest transition-colors rounded-sm shadow-md"
-          >
-            <Eye size={16} /> Ver Imagen Completa
-          </button>
-          <a
-            href={noticeImage}
-            download="Comunicado_Club_del_Lago.jpeg"
-            className="inline-flex items-center gap-2 bg-slate-200 hover:bg-slate-300 text-navy font-bold px-6 py-3 text-xs uppercase tracking-widest transition-colors rounded-sm"
-          >
-            <Download size={16} /> Descargar Imagen
-          </a>
-        </div>
-      </div>
-
-      {/* Fullscreen Zoom Modal */}
-      <AnimatePresence>
-        {selectedNoticeImage && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-navy/95 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
-            onClick={() => setSelectedNoticeImage(null)}
-          >
-            <button 
-              className="absolute top-6 right-6 text-white hover:text-gold transition-colors bg-white/10 p-3 rounded-full cursor-pointer z-10"
-              onClick={() => setSelectedNoticeImage(null)}
-            >
-              <X size={28} />
-            </button>
-
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-4xl max-h-[92vh] bg-white p-2 md:p-4 rounded-sm shadow-2xl overflow-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img 
-                src={selectedNoticeImage} 
-                alt="Comunicado Oficial" 
-                className="w-full h-auto max-h-[82vh] object-contain mx-auto"
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
   );
 };
 
@@ -2723,7 +2359,6 @@ export default function App() {
         <main className="grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/comunicados" element={<ComunicadosPage />} />
             <Route path="/instalaciones" element={<InstallationsPage />} />
             <Route path="/deportes" element={<SportsPage />} />
             <Route path="/directorio" element={<DirectoryPage />} />
